@@ -3,3 +3,5 @@ config.py
 installflask.sh
 shell.py
 virtualenv.py
+flask/
+getfile/*

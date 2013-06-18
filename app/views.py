@@ -105,7 +105,7 @@ def package(rpm_id, dist):
     rpmurl = 'http://www.koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
     print rpmurl
 
-    #subprocess.Popen('./extract/extract.sh ' + rpmurl, shell=True)
+    subprocess.Popen('/getfile.sh ' + rpmurl, shell=True)
 
     return render_template('package.html',
         breadcrumbscontent = breadcrumbscontent,
