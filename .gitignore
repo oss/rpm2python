@@ -1,2 +1,5 @@
 *.pyc
 config.py
+installflask.sh
+shell.py
+virtualenv.py
