@@ -1,0 +1,47 @@
+<!-- extend base layout -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="function_description">
+    <table id='resultsTable'>
+        <tr>
+            <th>Name</th>
+            <th>Summary</th>
+            <th style='width: 90x;'>Stable</th>
+            <th style='width: 90x;'>Testing</th>
+            <th style='width: 90x;'>Unstable</th>
+            <th style='width: 76x;'>Arch</th>
+        </tr>
+        {% for packname in packnames %}
+            <tr>
+                <td><strong>{{ packname.name }}</strong></td>
+                <td>{{ packname.packages[0].Summary }}</td>
+                <td class='rutgers'><strong>
+                {% for repo in packname.repos['stable'] if packname.newest[repo].Version != "" %}
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                {% endfor %}
+                </strong></td>
+                <td class='rutgers-testing'><strong>
+                {% for repo in packname.repos['testing'] if packname.newest[repo].Version != "" %}
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                {% endfor %}
+                </strong></td>
+                <td class='rutgers-unstable'><strong>
+                {% for repo in packname.repos['unstable'] if packname.newest[repo].Version != "" %}
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                {% endfor %}
+                </strong></td>
+                <td>
+                {% for arch in packname.archs if arch != 'src' %}
+                {% if not loop.last %}
+                {{ arch }}, 
+                {% else %}
+                {{ arch }}
+                {% endif %}
+                {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
