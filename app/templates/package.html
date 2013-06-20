@@ -216,10 +216,10 @@
                                     {% for file in package.files %}
                                     <tr>
                                         <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                            <a href='http://www.google.com/'>{{file.Path}}</a>
+                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Path}}</a>
                                         </td>
                                         <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                            <a href='http://www.google.com/'>{{file.Size}}</a>
+                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Size}}</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -236,22 +236,18 @@
                                             Size
                                         </td>
                                     </tr>
+                                    {% for packname in packnames if packname.Arch == 'src' %}
+                                    {% for file in packname.files %}
                                     <tr>
                                         <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                            <a href='10612/getfile/pam_ru_become-1.2.1.tar.gz'>pam_ru_become-1.2.1.tar.gz</a>
+                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Path}}</a>
                                         </td>
                                         <td style='text-align: right;'>
-                                            <a href='10612/getfile/pam_ru_become-1.2.1.tar.gz'>17430</a>
+                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Size}}</a>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                            <a href='10612/getfile/pam_ru_become.spec'>pam_ru_become.spec</a>
-                                        </td>
-                                        <td style='text-align: right;'>
-                                            <a href='10612/getfile/pam_ru_become.spec'>1664</a>
-                                        </td>
-                                    </tr>
+                                    {% endfor %}
+                                    {% endfor %}
                                 </table>
                             </div><!-- End Sources -->
                             <!-- Begin Dependencies -->
@@ -269,7 +265,7 @@
                                                 {% for provide in package.provides %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for("package", rpm_id=provide.rpm_id, dist=dist)}}'>{{provide.Resource}} = {{provide.Version}}</a>
+                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}} = {{provide.Version}}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Provides -->
                                             </table>
@@ -285,7 +281,7 @@
                                                 {% for require in package.requires %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for("package", rpm_id=require.rpm_id, dist=dist)}}'>{{require.Resource}} = {{require.Version}}</a>
+                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}} = {{require.Version}}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Requires -->
                                             </table>
@@ -297,7 +293,7 @@
                                                 <!-- Begin Obsoletes -->
                                                 <tr>
                                                     <td class='headeru' style='background: #ffffff;'>
-                                                        No Obsoletes
+                                                        Obsoletes
                                                     </td>
                                                 </tr><!-- End Obsoletes -->
                                             </table>
@@ -326,7 +322,12 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            {{package.specchangelogs.Text}}
+                                            {% for specchangelog, spec in izip_longest(package.specchangelogs,specchangelogs) %}
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            {% for line in spec %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            {% endfor %}
                                         </td>
                                     </tr>
                                 </table><!-- End Spec ChangeLog -->

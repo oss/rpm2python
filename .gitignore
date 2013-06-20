@@ -5,3 +5,4 @@ shell.py
 virtualenv.py
 flask/
 getfile/*
+*.swp

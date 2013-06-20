@@ -1,7 +1,7 @@
 from app import app
-from models import Cent5Packages
+from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires
 from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, make_response
 from package import PackageName
 from datetime import date, timedelta
 import calendar
@@ -9,6 +9,7 @@ from forms import SearchForm
 from sqlalchemy import desc
 import datetime
 import subprocess
+import os
 
 def buildpacknames(packages):
     packnames = []
@@ -37,6 +38,9 @@ def package2url(package):
     ret += package
     return ret
 
+def unix2standard(date):
+    return datetime.datetime.fromtimestamp(int(date)).strftime("%b %d %Y %I:%M %p")
+ 
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<string:letter>', methods = ['GET', 'POST'])
@@ -87,7 +91,8 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 @app.route('/<int:rpm_id>/<string:dist>', methods = ['GET', 'POST'])
-def package(rpm_id, dist):
+@app.route('/<int:rpm_id>/<string:dist>/getfile/<path:f>')
+def package(rpm_id, dist, f=None):
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
@@ -99,24 +104,31 @@ def package(rpm_id, dist):
         package = Cent5Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent5Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent5Packages.Arch).all()
 
+    if f is not None:
+        rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
+        subprocess.Popen('./getfile.sh ' + rpmurl, stdout=open(os.devnull, 'wb'), shell=True)
+        resp = make_response(open('getfile/' + f).read())
+        return resp
+
     breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel
     srcurl = package2url(package.SRCRPM)
-    builton = datetime.datetime.fromtimestamp(int(package.Date)).strftime("%b %d %Y %I:%M %p")
-    rpmurl = 'http://www.koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-    print rpmurl
-
-    subprocess.Popen('/getfile.sh ' + rpmurl, shell=True)
+    builton = unix2standard(package.Date)
+    softwarechangelog = ""
+    if package.softwarechangelogs is not None:
+        softchangelogsplit = package.softwarechangelogs.Text.split('\n', 5)
+        softwarechangelog = [softchangelogsplit[:4], softchangelogsplit[5]]
+    specchangelogs = []
+    for specchangelog in package.specchangelogs:
+        specchangelogs.append(specchangelog.Text.split('\n'))
 
     return render_template('package.html',
+        rpm_id = rpm_id,
+        dist = dist,
         breadcrumbscontent = breadcrumbscontent,
         package = package,
         packnames = packnames,
         form = form,
         srcurl = srcurl,
-        builton = builton)
-
-@app.route('/test')
-def test():
-    package = Cent6Packages.query.filter_by(Name='pyflakes').first()
-
-    return package.Name
+        builton = builton,
+        softwarechangelog = softwarechangelog,
+        specchangelogs = specchangelogs)

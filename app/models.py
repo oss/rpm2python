@@ -76,7 +76,7 @@ class Cent6Packages(db1.Model):
     obsoletes = db1.relationship('Cent6Obsoletes', backref='package', lazy='dynamic')
     provides = db1.relationship('Cent6Provides', backref='package', lazy='dynamic')
     requires = db1.relationship('Cent6Requires', backref='package', lazy='dynamic')
-    softwarechangelogs = db1.relationship('Cent6SoftwareChangeLogs', backref='package', lazy='dynamic')
+    softwarechangelogs = db1.relationship('Cent6SoftwareChangeLogs', backref='package', uselist=False)
     specchangelogs = db1.relationship('Cent6SpecChangeLogs', backref='package', lazy='dynamic')
 
 class Cent6Provides(db1.Model):
@@ -190,7 +190,7 @@ class Cent5Packages(db2.Model):
     obsoletes = db2.relationship('Cent5Obsoletes', backref='package', lazy='dynamic')
     provides = db2.relationship('Cent5Provides', backref='package', lazy='dynamic')
     requires = db2.relationship('Cent5Requires', backref='package', lazy='dynamic')
-    softwarechangelogs = db2.relationship('Cent5SoftwareChangeLogs', backref='package', lazy='dynamic')
+    softwarechangelogs = db2.relationship('Cent5SoftwareChangeLogs', backref='package', uselist=False)
     specchangelogs = db2.relationship('Cent5SpecChangeLogs', backref='package', lazy='dynamic')
 
 class Cent5Provides(db2.Model):

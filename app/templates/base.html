@@ -5,7 +5,42 @@
         <meta content="rpm.rutgers.edu, Rutgers RPM, rutgers centos, centos rpms" name="keywords" />
         <title>rpm2python</title>
         <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="http://centos.rutgers.edu/rpm2php/css/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
         <link rel="icon" type="image/vnd.microsoft.icon" href="http://centos.rutgers.edu/rpm2php/img/favicon.ico" />
+        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery-latest.min.js">
+</script>
+        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery.bgiframe.min.js">
+</script>
+        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery.autocomplete.js">
+</script>
+        <link href="http://centos.rutgers.edu/rpm2php/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery-ui-1.8.4.custom.min.js">
+</script>
+        <script type="text/javascript">
+//<![CDATA[
+        $(function(){
+
+        // Tabs
+        $('#tabs').tabs();
+        });
+        //]]>
+        </script>
+        <script type="text/javascript">
+//<![CDATA[
+        function doMenu(item) {
+        obj=document.getElementById(item);
+        col=document.getElementById("x" + item);
+        if (obj.style.display=="none") {
+        obj.style.display="block";
+        col.innerHTML="[-]";
+        }
+        else {
+        obj.style.display="none";
+        col.innerHTML="[+]";
+        }
+        }
+        //]]>
+        </script>
     </head>
     <body>
         <div id="header">
