@@ -5,17 +5,13 @@
         <meta content="rpm.rutgers.edu, Rutgers RPM, rutgers centos, centos rpms" name="keywords" />
         <title>rpm2python</title>
         <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
-        <link href="http://centos.rutgers.edu/rpm2php/css/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
-        <link rel="icon" type="image/vnd.microsoft.icon" href="http://centos.rutgers.edu/rpm2php/img/favicon.ico" />
-        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery-latest.min.js">
-</script>
-        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery.bgiframe.min.js">
-</script>
-        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery.autocomplete.js">
-</script>
-        <link href="http://centos.rutgers.edu/rpm2php/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="http://centos.rutgers.edu/rpm2php/js/jquery-ui-1.8.4.custom.min.js">
-</script>
+        <link href="/static/css/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" type="image/vnd.microsoft.icon" href="static/img/favicon.ico" />
+        <script type="text/javascript" src="/static/js/jquery-latest.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.bgiframe.min.js"></script>
+        <script type="text/javascrip;t" src="/static/js/jquery.autocomplete.js"></script>
+        <link href="/static/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/static/js/jquery-ui-1.8.4.custom.min.js"></script>
         <script type="text/javascript">
 //<![CDATA[
         $(function(){
@@ -41,12 +37,26 @@
         }
         //]]>
         </script>
+        <script type="text/javascript">
+//<![CDATA[
+
+                var packages = ["nodejs","nagios","kodos",];
+                $(document).ready(function(){
+                        $("#function_name").autocomplete(packages, {
+                                matchContains: true,
+                                extraParams: {searchby: 'name'},
+                                minChars: 2,
+                                selectFirst: false
+                        });
+                });
+        //]]>
+        </script>
     </head>
     <body>
         <div id="header">
             <div id="seal"></div>
             <div id="logo">
-                <a href="http://www.rutgers.edu"><img alt="logo" src="http://centos.rutgers.edu/rpm2php/img/logo.png" /></a>
+                <a href="http://www.rutgers.edu"><img alt="logo" src="/static/img/logo.png" /></a>
             </div>
             <div id="listmenu">
                 <ul>
@@ -64,7 +74,7 @@
             <div id="search">
                 <form method="get" action="http://www.google.com/u/rutgerz" id="gs">
                     <fieldset>
-                        <input type="hidden" name="hl" value="en" /> <input type="hidden" name="lr" value="" /> <input type="hidden" name="ie" value="ISO-8859-1" /> <label for="q">Search:</label> <input type="text" id="q" name="q" size="10" maxlength="2048" value="" /> <input id="go_button" type="image" src="http://centos.rutgers.edu/rpm2php/img/gobutton.gif" alt="Submit button" />
+                        <input type="hidden" name="hl" value="en" /> <input type="hidden" name="lr" value="" /> <input type="hidden" name="ie" value="ISO-8859-1" /> <label for="q">Search:</label> <input type="text" id="q" name="q" size="10" maxlength="2048" value="" /> <input id="go_button" type="image" src="/static/img/gobutton.gif" alt="Submit button" />
                     </fieldset>
                 </form>
             </div>
@@ -86,7 +96,7 @@
                 <label for="searchby">Search by</label>
                 {{form.searchby}}
                 {{form.function_name}}
-                <input type="image" src="http://centos.rutgers.edu/rpm2php/img/search.png" value="search" id="search_button" />
+                <input type="image" src="/static/img/search.png" value="search" id="search_button" />
                 </fieldset>
             </form><span class="letters">
                 {% for letter in xrange(ord('A'), ord('Z')+1) %}

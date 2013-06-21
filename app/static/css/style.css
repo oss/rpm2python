@@ -292,12 +292,13 @@ select{
 	margin-right: auto;
 	margin-bottom: 40px;
 }
-#function_description a, a:visited{
+#function_description a, a:visited {
 	color: #666699;
 }
 .resultsLine{
 	width: 100%;
 	border-collapse: collapse;
+    font-size: 13px;
 }
 .resultsLine tbody tr:hover td{
 	background: #f0f0f0;

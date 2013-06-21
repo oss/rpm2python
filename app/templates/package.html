@@ -6,7 +6,7 @@
         <h3>
             {{package.Name}} {{package.Version}}-{{package.Rel}}<br />
         </h3>
-        <table style='width: 100%; padding: 0; margin: 0; border: 0;'>
+        <table style='width: 100%; padding: 0; margin: 0; border: 0; font-size: 13px; color: #505050;'>
             <tr>
                 <td class='title' style='text-align: left; padding-left: 40px; padding-right: 40px;'>
                     Summary
@@ -222,7 +222,7 @@
                                             {{file.Path + '/'}}
                                             {% endif %}
                                         </td>
-                                        <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                        <td style='padding-top: 2px; padding-bottom: 2px; text-align: right;'>
                                             {% if file.Digest != "" %}
                                             <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Size}}</a>
                                             {% else %}
@@ -273,7 +273,7 @@
                                                 {% for provide in package.provides %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}} = {{provide.Version}}</a>
+                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}}{% if "" != provide.Version %} = {{provide.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Provides -->
                                             </table>
@@ -289,7 +289,7 @@
                                                 {% for require in package.requires %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}} = {{require.Version}}</a>
+                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}}{% if "" != require.Version %} = {{require.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Requires -->
                                             </table>
@@ -307,7 +307,7 @@
                                                 {% for obsolete in package.obsoletes %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}} = {{obsolete.Version}}</a>
+                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}}{% if "" != obsolete.Version %} = {{obsolete.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Obsoletes -->
                                             </table>
@@ -323,7 +323,7 @@
                                                 {% for conflict in package.conflicts %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}} = {{conflict.Version}}</a>
+                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}}{% if "" != conflict.Version %} = {{conflict.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Conflicts -->
                                             </table>
@@ -334,7 +334,7 @@
                             <!-- Begin ChangeLogs -->
                             <div id='tabs-4'>
                                 <!-- Begin Spec ChangeLog -->
-                                <table class='clogTable' style='vertical-align: top; height: 100%;' cellspacing='0'>
+                                <table class='clogTable' cellspacing='0'>
                                     <tr>
                                         <td class='headeru'>
                                             Specfile ChangeLog<a href="JavaScript:doMenu('clog');" id='xclog' name="xclog">[+]</a>
@@ -364,7 +364,7 @@
                                     </tr>
                                 </table><!-- End Spec ChangeLog -->
                                 {% if "" not in softwarechangelog %}
-                                <table>
+                                <table class="clogTable" cellspacing="0">
                                     <tr>
                                         <td class='headeru ttip' id='swclogtip'>
                                             Software ChangeLog <a href="JavaScript:doMenu('swclog');" id='xswclog' name="xswclog">[+]</a>
