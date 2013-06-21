@@ -1,5 +1,7 @@
 from app.models import Cent6Packages
 
+#PackageName is used in the index template for ordering purposes
+#it groups packages of the same name together, and gets the latest version from each repo to display it
 class PackageName():
     def __init__(self, name, packages):
         self.name = name

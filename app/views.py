@@ -12,6 +12,8 @@ import subprocess
 import os
 import mimetypes
 
+#puts the given list of packages into a container object called PackageName
+#this stores all packages of the same name together
 def buildpacknames(packages):
     packnames = []
     packname = {}
@@ -27,6 +29,8 @@ def buildpacknames(packages):
         packnames.append(PackageName(name, packname[name]))
     return packnames
 
+#this converts a package name to a url in koji
+#it will probably be removed in refactoring
 def package2url(package):
     ret = 'http://koji.rutgers.edu/packages/'
     words = package.split('-')
@@ -39,29 +43,37 @@ def package2url(package):
     ret += package
     return ret
 
+#converts a unix timestamp to a human readable format
 def unix2standard(date):
     return datetime.datetime.fromtimestamp(int(date)).strftime("%b %d %Y %I:%M %p")
  
+#view that returns the initial page (index.html)
+#it extends the base layout and handles search results
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<string:letter>', methods = ['GET', 'POST'])
 @app.route('/search/<string:searchby>/<string:search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
+    #checks if the user arrived to this page from a search form
+    #if so, they are redirected to a new page with the results
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
 
+    #if the user came to the '/' url, give them all packages made in the past 2 weeks
     if letter is None and search is None and searchby is None:
         newerthan = int(calendar.timegm((date.today() - timedelta(days=14)).timetuple()))
         packages = Cent6Packages.query.filter(Cent6Packages.Date > newerthan).order_by(desc(Cent6Packages.Date)).all()
         packages.extend(Cent5Packages.query.filter(Cent5Packages.Date > newerthan).order_by(desc(Cent6Packages.Date)).all())
         breadcrumbscontent = 'Latest'
+    #if the user is searching by letter, find packages that start with that letter
     elif search is None and searchby is None:
         if len(letter) != 1:
             return redirect(url_for('index'))
         packages = Cent6Packages.query.filter(Cent6Packages.Name.startswith(letter)).order_by(Cent6Packages.Name).all()
         packages.extend(Cent5Packages.query.filter(Cent5Packages.Name.startswith(letter)).order_by(Cent5Packages.Name).all())
         breadcrumbscontent = letter
+    #if the user searched, then query the correct part of the database with wildcards around their keyword
     else:
         if searchby == 'name':
             packages = Cent6Packages.query.filter(Cent6Packages.Name.like("%" + search + "%")).order_by(Cent6Packages.Name).all()
@@ -98,13 +110,18 @@ def index(letter=None, search=None, searchby=None):
         breadcrumbscontent = breadcrumbscontent,
         form = form)
 
+#returns a page with info about the package that the user queried
 @app.route('/<int:rpm_id>/<string:dist>', methods = ['GET', 'POST'])
 @app.route('/<int:rpm_id>/<string:dist>/getfile/<path:f>')
 def package(rpm_id, dist, f=None):
+    #check if the user got to this page through a search
+    #return a results list if so
     form = SearchForm()
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
 
+    #find out the distribution the package is in
+    #find the package by rpm_id and then get all the other packages with the same name
     if 'centos6' in dist:
         package = Cent6Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent6Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent6Packages.Arch).all()
@@ -112,6 +129,8 @@ def package(rpm_id, dist, f=None):
         package = Cent5Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent5Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent5Packages.Arch).all()
  
+    #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
+    #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
         subprocess.Popen('./getfile.sh ' + rpmurl, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True).wait()
@@ -123,6 +142,7 @@ def package(rpm_id, dist, f=None):
             resp.content_type = 'application/x-empty'
         return resp
 
+    #a few extra variables that will be needed to print out in the template
     breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel
     srcurl = package2url(package.SRCRPM)
     builton = unix2standard(package.Date)

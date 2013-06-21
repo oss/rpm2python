@@ -1,3 +1,9 @@
+'''
+These classes for models for all the tables in the database. Cent5 and 6 are identical, but because of a limitation in SQLAlchemy
+there is no way to have them in the same metadata instance, or even inherit from the same base class.
+They are nearly identical except for references to Cent5 are Cent6 in each class, and db2 is used in Cent5 and db1 in Cent6. The binds are also different and can
+be changed in the config file
+'''
 from app import db1, db2
 
 class Cent6ChangeLogs(db1.Model):
