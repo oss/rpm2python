@@ -1,6 +1,6 @@
 from app import app
-from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires
-from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires
+from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts
+from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts
 from flask import render_template, redirect, url_for, make_response
 from package import PackageName
 from datetime import date, timedelta
@@ -10,6 +10,7 @@ from sqlalchemy import desc
 import datetime
 import subprocess
 import os
+import mimetypes
 
 def buildpacknames(packages):
     packnames = []
@@ -80,6 +81,13 @@ def index(letter=None, search=None, searchby=None):
         elif searchby == 'summary':
             packages = Cent6Packages.query.filter(Cent6Packages.Summary.like("%" + search + "%")).order_by(Cent6Packages.Name).all()
             packages.extend(Cent5Packages.query.filter(Cent5Packages.Summary.like("%" + search + "%")).order_by(Cent5Packages.Name).all())
+        elif searchby == 'obsoletes':
+            packages = Cent6Packages.query.join(Cent6Obsoletes).filter(Cent6Obsoletes.Resource.like("%" + search + "%")).order_by(Cent6Packages.Name).all()
+            packages.extend(Cent5Packages.query.join(Cent5Obsoletes).filter(Cent5Obsoletes.Resource.like("%" + search + "%")).order_by(Cent5Packages.Name).all())
+        elif searchby == 'conflicts':
+            packages = Cent6Packages.query.join(Cent6Conflicts).filter(Cent6Conflicts.Resource.like("%" + search + "%")).order_by(Cent6Packages.Name).all()
+            packages.extend(Cent5Packages.query.join(Cent5Conflicts).filter(Cent5Conflicts.Resource.like("%" + search + "%")).order_by(Cent5Packages.Name).all())
+
 
         breadcrumbscontent = 'Search'
 
@@ -103,11 +111,16 @@ def package(rpm_id, dist, f=None):
     else:
         package = Cent5Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent5Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent5Packages.Arch).all()
-
+ 
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        subprocess.Popen('./getfile.sh ' + rpmurl, stdout=open(os.devnull, 'wb'), shell=True)
+        subprocess.Popen('./getfile.sh ' + rpmurl, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True).wait()
         resp = make_response(open('getfile/' + f).read())
+        mimet, encoding = mimetypes.guess_type('getfile/' + f)
+        if mimet is not None:
+            resp.content_type = mimet
+        else:
+            resp.content_type = 'application/x-empty'
         return resp
 
     breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel

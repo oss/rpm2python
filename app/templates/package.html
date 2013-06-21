@@ -216,10 +216,18 @@
                                     {% for file in package.files %}
                                     <tr>
                                         <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                            {% if file.Digest != "" %}
                                             <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Path}}</a>
+                                            {% else %}
+                                            {{file.Path + '/'}}
+                                            {% endif %}
                                         </td>
                                         <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                            {% if file.Digest != "" %}
                                             <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Size}}</a>
+                                            {% else %}
+                                            directory
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -295,7 +303,13 @@
                                                     <td class='headeru' style='background: #ffffff;'>
                                                         Obsoletes
                                                     </td>
-                                                </tr><!-- End Obsoletes -->
+                                                </tr>
+                                                {% for obsolete in package.obsoletes %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}} = {{obsolete.Version}}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Obsoletes -->
                                             </table>
                                         </td>
                                         <td style='vertical-align: top;'>
@@ -303,9 +317,15 @@
                                                 <!-- Begin Conflicts -->
                                                 <tr>
                                                     <td class='headeru' style='background: #ffffff;'>
-                                                        No Conflicts
+                                                        Conflicts
                                                     </td>
-                                                </tr><!-- End Conflicts -->
+                                                </tr>
+                                                {% for conflict in package.conflicts %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}} = {{conflict.Version}}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Conflicts -->
                                             </table>
                                         </td>
                                     </tr>
@@ -322,15 +342,48 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            {% for specchangelog, spec in izip_longest(package.specchangelogs,specchangelogs) %}
+                                            {% for specchangelog, spec in izip_longest(package.specchangelogs, specchangelogs) %}
+                                            {% if loop.index < 5 %}
                                             * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
                                             {% for line in spec %}
                                             {{line}}<br/>
                                             {% endfor %}
+                                            {% endif %}
                                             {% endfor %}
+                                            <div style='display: none' id='clog'>
+                                            {% for specchangelog, spec in izip_longest(package.specchangelogs, specchangelogs) %}
+                                            {% if loop.index >= 5 %}
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            {% for line in spec %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% endfor %}
+                                            </div>
                                         </td>
                                     </tr>
                                 </table><!-- End Spec ChangeLog -->
+                                {% if "" not in softwarechangelog %}
+                                <table>
+                                    <tr>
+                                        <td class='headeru ttip' id='swclogtip'>
+                                            Software ChangeLog <a href="JavaScript:doMenu('swclog');" id='xswclog' name="xswclog">[+]</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        {% for line in softwarechangelog[0] %}
+                                        {{line}}<br/>
+                                        {% endfor %}
+                                            <div style='display: none' id='swclog'>
+                                            {% for line in softwarechangelog[1].split('\n') %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            </div>
+                                        </td>
+                                    <tr>
+                                </table>
+                                {% endif %}
                             </div><!-- End ChangeLogs -->
                         </div><!-- End Tabs -->
                     </td>
