@@ -40,14 +40,9 @@
         <script type="text/javascript">
 //<![CDATA[
 
-                var packages = ["nodejs","nagios","kodos",];
+                var packages = ["nodejs", "nagios", "kodos"];
                 $(document).ready(function(){
-                        $("#function_name").autocomplete(packages, {
-                                matchContains: true,
-                                extraParams: {searchby: 'name'},
-                                minChars: 2,
-                                selectFirst: false
-                        });
+                        $("#function_name").autocomplete(source: ["nodejs", "nagios", "kodos"]);
                 });
         //]]>
         </script>

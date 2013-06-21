@@ -2,6 +2,7 @@ from app import app
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts
 from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts
 from flask import render_template, redirect, url_for, make_response
+from wekzeug.routing import BaseConverter
 from package import PackageName
 from datetime import date, timedelta
 import calendar
@@ -43,6 +44,13 @@ def package2url(package):
     ret += package
     return ret
 
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, *items):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = items[0]
+
+app.url_map.converters['regex'] = RegexConverter
+
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
     return datetime.datetime.fromtimestamp(int(date)).strftime("%b %d %Y %I:%M %p")
@@ -51,7 +59,7 @@ def unix2standard(date):
 #it extends the base layout and handles search results
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
-@app.route('/<string:letter>', methods = ['GET', 'POST'])
+@app.route('/<regex("[a-zA-z]"):letter>', methods = ['GET', 'POST'])
 @app.route('/search/<string:searchby>/<string:search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
