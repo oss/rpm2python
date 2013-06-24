@@ -1,7 +1,7 @@
 from app import app
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts
 from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts
-from flask import render_template, redirect, url_for, make_response
+from flask import render_template, redirect, url_for, make_response, request
 from werkzeug.routing import BaseConverter
 from package import PackageName
 from datetime import date, timedelta
@@ -64,7 +64,7 @@ def unix2standard(date):
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
     #if so, they are redirected to a new page with the results
-    form = SearchForm()
+    form = SearchForm(request.form)
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
 
@@ -122,11 +122,11 @@ def index(letter=None, search=None, searchby=None):
 
 #returns a page with info about the package that the user queried
 @app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
-@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]*/?(?!\.))*"):f>')
+@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
 def package(rpm_id, dist, f=None):
     #check if the user got to this page through a search
     #return a results list if so
-    form = SearchForm()
+    form = SearchForm(request.form)
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
 
@@ -145,7 +145,7 @@ def package(rpm_id, dist, f=None):
     #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        subprocess.Popen('./getfile.sh ' + rpmurl, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'), shell=True).wait()
+        subprocess.Popen(['./getfile.sh', rpmurl], stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb')).wait()
         resp = make_response(open('getfile/' + f).read())
         mimet, encoding = mimetypes.guess_type('getfile/' + f)
         if mimet is not None:
