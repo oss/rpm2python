@@ -32,7 +32,7 @@ def buildpacknames(packages):
 
 #this converts a package name to a url in koji
 #it will probably be removed in refactoring
-def package2url(package):
+def SRCRPM2url(package):
     ret = 'http://koji.rutgers.edu/packages/'
     words = package.split('-')
     last = words[-1].split('.')
@@ -44,6 +44,7 @@ def package2url(package):
     ret += package
     return ret
 
+#allows for urls to be matched to a regex
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
         super(RegexConverter, self).__init__(url_map)
@@ -67,6 +68,8 @@ def index(letter=None, search=None, searchby=None):
     form = SearchForm(request.form)
     if form.validate_on_submit():
         return redirect(url_for('index', search=form.function_name.data, searchby=form.searchby.data))
+    
+    #packages = []
 
     #if the user came to the '/' url, give them all packages made in the past 2 weeks
     if letter is None and search is None and searchby is None:
@@ -156,7 +159,7 @@ def package(rpm_id, dist, f=None):
 
     #a few extra variables that will be needed to print out in the template
     breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel
-    srcurl = package2url(package.SRCRPM)
+    srcurl = SRCRPM2url(package.SRCRPM)
     builton = unix2standard(package.Date)
     softwarechangelog = ""
     if package.softwarechangelogs is not None:
