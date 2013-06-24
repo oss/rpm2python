@@ -2,7 +2,7 @@ from app import app
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts
 from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts
 from flask import render_template, redirect, url_for, make_response
-from wekzeug.routing import BaseConverter
+from werkzeug.routing import BaseConverter
 from package import PackageName
 from datetime import date, timedelta
 import calendar
@@ -60,7 +60,7 @@ def unix2standard(date):
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<regex("[a-zA-z]"):letter>', methods = ['GET', 'POST'])
-@app.route('/search/<string:searchby>/<string:search>', methods = ['GET', 'POST'])
+@app.route('/search/<string:searchby>/<regex("[-\w/\.]*"):search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
     #if so, they are redirected to a new page with the results
@@ -107,6 +107,8 @@ def index(letter=None, search=None, searchby=None):
         elif searchby == 'conflicts':
             packages = Cent6Packages.query.join(Cent6Conflicts).filter(Cent6Conflicts.Resource.like("%" + search + "%")).order_by(Cent6Packages.Name).all()
             packages.extend(Cent5Packages.query.join(Cent5Conflicts).filter(Cent5Conflicts.Resource.like("%" + search + "%")).order_by(Cent5Packages.Name).all())
+        else:
+            return render_template('404.html'), 404
 
 
         breadcrumbscontent = 'Search'
@@ -119,8 +121,8 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 #returns a page with info about the package that the user queried
-@app.route('/<int:rpm_id>/<string:dist>', methods = ['GET', 'POST'])
-@app.route('/<int:rpm_id>/<string:dist>/getfile/<path:f>')
+@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
+@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]*/?(?!\.))*"):f>')
 def package(rpm_id, dist, f=None):
     #check if the user got to this page through a search
     #return a results list if so
@@ -133,9 +135,11 @@ def package(rpm_id, dist, f=None):
     if 'centos6' in dist:
         package = Cent6Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent6Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent6Packages.Arch).all()
-    else:
+    elif 'centos5' in dist:
         package = Cent5Packages.query.filter_by(rpm_id=rpm_id).first()
         packnames = Cent5Packages.query.filter_by(Name=package.Name, Version=package.Version).order_by(Cent5Packages.Arch).all()
+    else:
+        return render_template('404.html'), 404
  
     #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
     #then give the user the file
@@ -173,3 +177,7 @@ def package(rpm_id, dist, f=None):
         builton = builton,
         softwarechangelog = softwarechangelog,
         specchangelogs = specchangelogs)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
