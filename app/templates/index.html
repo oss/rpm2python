@@ -15,7 +15,7 @@
         {% for packname in packnames %}
             <tr>
                 <td><strong>{{ packname.name }}</strong></td>
-                <td>{{ packname.packages[0].Summary }}</td>
+                <td>{{ packname.packages[0][0].Summary }}</td>
                 <td class='rutgers'><strong>
                 {% for repo in packname.repos['stable'] if packname.newest[repo].Version != "" %}
                 <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
