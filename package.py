@@ -1,4 +1,4 @@
-from app.models import Cent6Packages
+from app.models import Cent6Packages, Cent5Packages
 
 #PackageName is used in the index template for ordering purposes
 #it groups packages of the same name together, and gets the latest version
@@ -20,6 +20,9 @@ class PackageName():
             for repo in self.repos[genrepo]:
                 self.newest[repo] = fakepack
         for package in self.packages:
-            if package[0].Arch not in self.archs:
-                self.archs.append(package[0].Arch)
             self.newest[package[1]] = package[0]
+        '''duparchs = Cent6Packages.query.filter_by(Name=name).all()
+        duparchs.extend(Cent5Packages.query.filter_by(Name=name).all())
+        for arch in duparchs:
+            if arch.Arch not in self.archs:
+                self.archs.append(arch.Arch)'''

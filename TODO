@@ -1,3 +1,4 @@
 By order of importance:
+    -Fix ./getfile.sh security hole
     -Fix Arch
     -Autocomplete
