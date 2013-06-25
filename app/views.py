@@ -2,6 +2,7 @@ from app import app
 from flask import render_template, redirect, url_for, make_response, request
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
+from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
@@ -40,7 +41,7 @@ def index(letter=None, search=None, searchby=None):
     if letter is None and search is None and searchby is None:
         newerthan = int(calendar.timegm((date.today() - timedelta(days=14)).timetuple()))
         for distro in distros:
-            packages.append(newestquery(distro, Packages[distro].Date > newerthan))
+            packages.append(newestquery(distro, Packages[distro].Date > newerthan, order=desc(Packages[distro].Date)))
         breadcrumbscontent = 'Latest'
     #if the user is searching by letter, find packages that start with that letter
     elif search is None and searchby is None:
