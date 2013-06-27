@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import itertools
+from config import SENDMAIL, MAIL_TO, MAIL_SUBJECT
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -14,7 +15,7 @@ app.jinja_env.globals.update(izip_longest=itertools.izip_longest)
 if not app.debug:
     import logging
     from mail import MailHandler
-    mail_handler = MailHandler('/usr/sbin/sendmail', 'oss@oss.rutgers.edu', 'rpm2python error')
+    mail_handler = MailHandler(SENDMAIL, MAIL_TO, MAIL_SUBJECT)
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 
