@@ -146,4 +146,4 @@ def package(rpm_id, dist, f=None):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return redirect(url_for('index'))
