@@ -21,8 +21,8 @@ class PackageName():
                 self.newest[repo] = fakepack
         for package in self.packages:
             self.newest[package[1]] = package[0]
-        '''duparchs = Cent6Packages.query.filter_by(Name=name).all()
+        duparchs = Cent6Packages.query.filter_by(Name=name).all()
         duparchs.extend(Cent5Packages.query.filter_by(Name=name).all())
         for arch in duparchs:
             if arch.Arch not in self.archs:
-                self.archs.append(arch.Arch)'''
+                self.archs.append(arch.Arch)

@@ -107,7 +107,11 @@ def package(rpm_id, dist, f=None):
     #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        subprocess.Popen(['./getfile.sh', rpmurl], stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb')).wait()
+        os.chdir('getfile')
+        subprocess.Popen(['rm -rf *'], shell=True).wait()
+        subprocess.Popen(['wget', rpmurl]).wait()
+        subprocess.Popen(['rpm2cpio *.rpm | cpio -idmv'], shell=True).wait()
+        os.chdir('..')
         resp = make_response(open('getfile/' + f).read())
         mimet, encoding = mimetypes.guess_type('getfile/' + f)
         if mimet is not None:

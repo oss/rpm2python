@@ -1,4 +1,4 @@
 By order of importance:
-    -Fix ./getfile.sh security hole
-    -Fix Arch
+    -Optimize Arch
+    -500 email
     -Autocomplete
