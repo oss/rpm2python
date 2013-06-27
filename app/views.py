@@ -1,12 +1,13 @@
 from app import app
 from flask import render_template, redirect, url_for, make_response, request
+from flask.json import dumps
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
-from helpers import distros
+from helpers import distros, dbs
 
 from datetime import date, timedelta
 import calendar
@@ -143,6 +144,14 @@ def package(rpm_id, dist, f=None):
         builton = builton,
         softwarechangelog = softwarechangelog,
         specchangelogs = specchangelogs)
+
+@app.route('/autocomplete')
+def autocomplete():
+    results = []
+    search = request.args.get('term')
+    for distro in distros:
+        results.append(dbs[distro].session.query(Packages[distro].Name).filter(Packages[distro].Name.like('%' + search + '%')).all())
+    return dumps(results)
 
 @app.errorhandler(404)
 def page_not_found(e):

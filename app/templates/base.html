@@ -9,7 +9,7 @@
         <link rel="icon" type="image/vnd.microsoft.icon" href="static/img/favicon.ico" />
         <script type="text/javascript" src="/static/js/jquery-latest.min.js"></script>
         <script type="text/javascript" src="/static/js/jquery.bgiframe.min.js"></script>
-        <script type="text/javascrip;t" src="/static/js/jquery.autocomplete.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
         <link href="/static/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="/static/js/jquery-ui-1.8.4.custom.min.js"></script>
         <script type="text/javascript">
@@ -38,13 +38,12 @@
         //]]>
         </script>
         <script type="text/javascript">
-//<![CDATA[
-
-                var packages = ["nodejs", "nagios", "kodos"];
-                $(document).ready(function(){
-                        $("#function_name").autocomplete(source: ["nodejs", "nagios", "kodos"]);
+            $(function() {
+                $( "#function_name" ).autocomplete({
+                    source: '{{url_for("autocomplete")}}',
+                    minLength: 2,
                 });
-        //]]>
+            });
         </script>
     </head>
     <body>
