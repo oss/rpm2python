@@ -57,17 +57,21 @@ def buildpacknames(packages):
     packnames = []
     packname = {}
     names = []
+    archname = {}
 
     for cent in packages:
         for package in cent:
             if package[0].Name not in names:
                 names.append(package[0].Name)
+                archname[package[0].Name] = [package[0].Arch]
                 packname[package[0].Name] = [package]
+            elif package[0].Arch not in archname[package[0].Name]:
+                archname[package[0].Name].append(package[0].Arch)
             else:
                 packname[package[0].Name].append(package)
     
     for name in names:
-        packnames.append(PackageName(name, packname[name]))
+        packnames.append(PackageName(name, archname[name], packname[name]))
     return packnames
 
 #this converts a package name to a url in koji
