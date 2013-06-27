@@ -92,6 +92,6 @@ def newestquery(distro, queryfilter, order=None, join=None):
     if order is None:
         order = Packages[distro].Name
     if join is None:
-        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo).order_by(order).all()
+        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo, Packages[distro].Arch).order_by(order).all()
     else:
-        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).outerjoin(join).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo).order_by(order).all()
+        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).outerjoin(join).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo, Packages[distro].Arch).order_by(order).all()
