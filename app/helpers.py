@@ -5,6 +5,9 @@ from package import PackageName
 from sqlalchemy import func
 import datetime
 
+#This set of dictionaries allows easy access to the database
+#because the databases are identical, you can change which database you are querying by changing the key
+#add more if more databases are added
 distros = ['cent6', 'cent5']
 
 dbs = {

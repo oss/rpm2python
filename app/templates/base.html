@@ -37,11 +37,16 @@
         }
         //]]>
         </script>
+        <!--The following javascript is extremely hacky and should never be spoken of again
+            this function uses jquery autocomplete and takes a string from autocomplete that is then
+            evaluated as an array-->
         <script type="text/javascript">
-            $(function() {
-                $( "#function_name" ).autocomplete({
-                    source: '{{url_for("autocomplete")}}',
-                    minLength: 2,
+            $(document).ready(function() {
+                $.ajax({
+                    url: '{{ url_for("autocomplete") }}',
+                    success: function (data) {
+                        $('#function_name').autocomplete(eval(data));
+                    }
                 });
             });
         </script>

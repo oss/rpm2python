@@ -14,6 +14,7 @@ import calendar
 import subprocess
 import os
 import mimetypes
+import itertools
 
 #allows for urls to be matched to a regex
 class RegexConverter(BaseConverter):
@@ -145,13 +146,15 @@ def package(rpm_id, dist, f=None):
         softwarechangelog = softwarechangelog,
         specchangelogs = specchangelogs)
 
+#does a query for all packages in the database and puts them into a list that is then flattened and returned as a string
+#don't laugh, I don't acutally know any javascript
 @app.route('/autocomplete')
 def autocomplete():
     results = []
-    search = request.args.get('term')
     for distro in distros:
-        results.append(dbs[distro].session.query(Packages[distro].Name).filter(Packages[distro].Name.like('%' + search + '%')).all())
-    return dumps(results)
+        results.append(dbs[distro].session.query(Packages[distro].Name).group_by(Packages[distro].Name).all())
+    flattened = list(itertools.chain.from_iterable(results[0]))
+    return dumps(flattened)
 
 @app.errorhandler(404)
 def page_not_found(e):
