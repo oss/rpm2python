@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!venv/bin/python
 
 from rpm2python import app
 

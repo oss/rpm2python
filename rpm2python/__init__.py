@@ -1,10 +1,9 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import itertools
-from config import SENDMAIL, MAIL_TO, MAIL_SUBJECT
 
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_pyfile('/etc/rpm2python-conf.cfg')
 db1 = SQLAlchemy(app)
 db2 = SQLAlchemy(app)
 app.jinja_env.globals.update(ord=ord)
@@ -16,7 +15,7 @@ app.jinja_env.globals.update(reversed=reversed)
 if not app.debug:
     import logging
     from mail import MailHandler
-    mail_handler = MailHandler(SENDMAIL, MAIL_TO, MAIL_SUBJECT)
+    mail_handler = MailHandler(app.config['SENDMAIL'], app.config['MAIL_TO'], app.config['MAIL_SUBJECT'])
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 
