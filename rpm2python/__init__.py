@@ -3,7 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import itertools
 
 app = Flask(__name__)
-app.config.from_pyfile('/etc/rpm2python-conf.cfg')
+app.config.from_pyfile('/etc/rpm2python.cfg')
 db1 = SQLAlchemy(app)
 db2 = SQLAlchemy(app)
 app.jinja_env.globals.update(ord=ord)
