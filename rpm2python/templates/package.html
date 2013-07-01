@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="function_description">
+    <div id='packageHeader'>
+        <h3>
+            {{package.Name}} {{package.Version}}-{{package.Rel}}<br />
+        </h3>
+        <table style='width: 100%; padding: 0; margin: 0; border: 0; font-size: 13px; color: #505050;'>
+            <tr>
+                <td class='title' style='text-align: left; padding-left: 40px; padding-right: 40px;'>
+                    Summary
+                </td>
+            </tr>
+            <tr>
+                <td style='text-align: left; padding-left: 40px; padding-right: 40px;'>
+                    {{package.Summary}}
+                </td>
+            </tr>
+                <td class='title' style='text-align: left; padding-left: 40px; padding-right: 40px;'>
+                    Description
+                </td>
+            <tr>
+                <td style='text-align: left; padding-left: 40px; padding-right: 40px;'>
+                    {{package.Description}}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table cellspacing='0' cellpadding='0' style='width: 100%;'>
+                <tr>
+                    <td style='vertical-align: top; width: 33%; height: 100%' rowspan='2'>
+                        <table id='infoTable' style='height: 100%;'>
+                            <tr>
+                                <td class='title'>
+                                    Name
+                                </td>
+                                <td>
+                                    {{package.Name}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Version
+                                </td>
+                                <td>
+                                    {{package.Version}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Release
+                                </td>
+                                <td>
+                                    {{package.Rel}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Platform
+                                </td>
+                                <td>
+                                    Linux/{% for packname in packnames if packname.Arch != 'src' %}{% if not loop.last %}{{packname.Arch}},{% else %}{{packname.Arch}}{% endif %}{% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Size
+                                </td>
+                                <td>
+                                    {{package.Size}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Category
+                                </td>
+                                <td>
+                                    {{package.Category}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Vendor
+                                </td>
+                                <td>
+                                    {{package.Vendor}}
+                                </td>
+                            </tr>
+                            {% if '/' in package.URL %}
+                            <tr>
+                                <td class='title'>
+                                    URL
+                                </td>
+                                <td>
+                                    <a href='{{package.URL}}'>{{package.URL}}</a>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td class='title'>
+                                    Distribution
+                                </td>
+                                <td>
+                                    <table id='resultsTable' style='margin-bottom: 0px;'>
+                                        {% for distro in package.distributions %}
+                                        <tr>
+                                            <td class='{{distro.repo}}' style='border: 0px; padding: 3px 0px; text-align: left;'>
+                                                {{distro.repo}}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Built On
+                                </td>
+                                <td>
+                                    {{builton}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Built By
+                                </td>
+                                <td>
+                                    {{package.BuiltBy}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    License
+                                </td>
+                                <td>
+                                    {{package.License}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'>
+                                    Source RPM
+                                </td>
+                                <td>
+                                    <a href='{{srcurl}}'>{{package.SRCRPM}}</a>
+                                </td>
+                            </tr>
+                            {% for packname in packnames if packname.Arch != 'src' %}
+                            <tr>
+                                <td class='title'>
+                                    {{packname.Arch}}
+                                </td>
+                                <td>
+                                    <a href='http://koji.rutgers.edu/packages/{{packname.build_name}}/{{packname.Version}}/{{packname.Rel}}/{{packname.Arch}}/{{packname.nvr}}.{{packname.Arch}}.rpm'>{{packname.nvr}}.{{packname.Arch}}.rpm</a>
+                                </td>
+                            </tr>
+                                {% if package.Name in packname.DBGRPM %}
+                            <tr>
+                                <td class='title'>
+                                    Debug-{{packname.Arch}}
+                                </td>
+                                <td>
+                                    <a href='http://koji.rutgers.edu/packages/{{packname.build_name}}/{{packname.Version}}/{{packname.Rel}}/{{packname.Arch}}/{{packname.Name}}-debuginfo-{{packname.Version}}-{{packname.Rel}}.{{packname.Arch}}.rpm'>{{packname.Name}}-debuginfo-{{packname.Version}}-{{packname.Rel}}.{{packname.Arch}}.rpm</a>
+                                </td>
+                            </tr>
+                                {% endif %}
+                            {% endfor %}
+                            <tr>
+                                <td class='title'>
+                                    Koji
+                                </td>
+                                <td>
+                                    <a href='http://koji.rutgers.edu/koji/buildinfo?buildID={{package.build_id}}'>All RPMs from this build</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class='title'></td>
+                                <td>
+                                    <a href='http://koji.rutgers.edu/koji/packageinfo?packageID={{package.package_id}}'>All builds of this package</a>
+                                </td>
+                            </tr>
+                            <tr style='height: 100%;'>
+                                <!-- This is the filler row -->
+                                <td></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style='width: 4px;'></td>
+                    <td style='vertical-align: top; height: 100%;'>
+                        <!-- Begin Tabs -->
+                        <div id='tabs' style='height: 100%;'>
+                            <ul style='-moz-border-radius: 0;'>
+                                <li>
+                                    <a href='#tabs-1'>Files</a>
+                                </li>
+                                <li>
+                                    <a href='#tabs-2'>Sources</a>
+                                </li>
+                                <li>
+                                    <a href='#tabs-3'>Dependencies</a>
+                                </li>
+                                <li>
+                                    <a href='#tabs-4'>ChangeLogs</a>
+                                </li>
+                            </ul><!-- Begin Files -->
+                            <div id='tabs-1'>
+                                <table class='resultsLine'>
+                                    <tr>
+                                        <td class='headeru' style='width: 80%; background: #ffffff;'>
+                                            Name
+                                        </td>
+                                        <td class='headeru' style='text-align: right; background: #ffffff;'>
+                                            Size
+                                        </td>
+                                    </tr>
+                                    {% for file in package.files %}
+                                    <tr>
+                                        <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                            {% if file.Digest != "" %}
+                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Path}}</a>
+                                            {% else %}
+                                            {{file.Path + '/'}}
+                                            {% endif %}
+                                        </td>
+                                        <td style='padding-top: 2px; padding-bottom: 2px; text-align: right;'>
+                                            {% if file.Digest != "" %}
+                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Size}}</a>
+                                            {% else %}
+                                            directory
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div><!-- End Files -->
+                            <!-- Begin Sources -->
+                            <div id='tabs-2'>
+                                <table class='resultsLine'>
+                                    <tr>
+                                        <td class='headeru' style='width: 80%; background: #ffffff;'>
+                                            Name
+                                        </td>
+                                        <td class='headeru' style='text-align: right; background: #ffffff;'>
+                                            Size
+                                        </td>
+                                    </tr>
+                                    {% for packname in packnames if packname.Arch == 'src' %}
+                                    {% for file in packname.files %}
+                                    <tr>
+                                        <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Path}}</a>
+                                        </td>
+                                        <td style='text-align: right;'>
+                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Size}}</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </table>
+                            </div><!-- End Sources -->
+                            <!-- Begin Dependencies -->
+                            <div id='tabs-3'>
+                                <table style='width: 100%;' cellspacing='0'>
+                                    <tr>
+                                        <td style='width: 50%; vertical-align: top;'>
+                                            <table class='resultsLine'>
+                                                <!-- Begin Provides -->
+                                                <tr>
+                                                    <td class='headeru' style='background: #ffffff;'>
+                                                        Provides
+                                                    </td>
+                                                </tr>
+                                                {% for provide in package.provides %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}}{% if "" != provide.Version %} = {{provide.Version}}{% endif %}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Provides -->
+                                            </table>
+                                        </td>
+                                        <td style='vertical-align: top;'>
+                                            <table class='resultsLine'>
+                                                <!-- Begin Requires -->
+                                                <tr>
+                                                    <td class='headeru' style='background: #ffffff;'>
+                                                        Requires
+                                                    </td>
+                                                </tr>
+                                                {% for require in package.requires %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}}{% if "" != require.Version %} = {{require.Version}}{% endif %}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Requires -->
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style='vertical-align: top;'>
+                                            <table class='resultsLine'>
+                                                <!-- Begin Obsoletes -->
+                                                <tr>
+                                                    <td class='headeru' style='background: #ffffff;'>
+                                                        Obsoletes
+                                                    </td>
+                                                </tr>
+                                                {% for obsolete in package.obsoletes %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}}{% if "" != obsolete.Version %} = {{obsolete.Version}}{% endif %}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Obsoletes -->
+                                            </table>
+                                        </td>
+                                        <td style='vertical-align: top;'>
+                                            <table class='resultsLine'>
+                                                <!-- Begin Conflicts -->
+                                                <tr>
+                                                    <td class='headeru' style='background: #ffffff;'>
+                                                        Conflicts
+                                                    </td>
+                                                </tr>
+                                                {% for conflict in package.conflicts %}
+                                                <tr>
+                                                    <td style='padding-top: 2px; padding-bottom: 2px;'>
+                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}}{% if "" != conflict.Version %} = {{conflict.Version}}{% endif %}</a>
+                                                    </td>
+                                                </tr>{% endfor %}<!-- End Conflicts -->
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div><!-- End Dependencies -->
+                            <!-- Begin ChangeLogs -->
+                            <div id='tabs-4'>
+                                <!-- Begin Spec ChangeLog -->
+                                <table class='clogTable' cellspacing='0'>
+                                    <tr>
+                                        <td class='headeru'>
+                                            Specfile ChangeLog<a href="JavaScript:doMenu('clog');" id='xclog' name="xclog">[+]</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {% for specchangelog, spec in izip_longest(reversed(packagespecchangelogs), reversed(specchangelogs)) %}
+                                            {% if loop.index < 5 %}
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            {% for line in spec %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% endfor %}
+                                            <div style='display: none' id='clog'>
+                                            {% for specchangelog, spec in izip_longest(packagespecchangelogs, specchangelogs) %}
+                                            {% if loop.index >= 5 %}
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            {% for line in spec %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% endfor %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table><!-- End Spec ChangeLog -->
+                                {% if "" not in softwarechangelog %}
+                                <table class="clogTable" cellspacing="0">
+                                    <tr>
+                                        <td class='headeru ttip' id='swclogtip'>
+                                            Software ChangeLog <a href="JavaScript:doMenu('swclog');" id='xswclog' name="xswclog">[+]</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                        {% for line in softwarechangelog[0] %}
+                                        {{line}}<br/>
+                                        {% endfor %}
+                                            <div style='display: none' id='swclog'>
+                                            {% for line in softwarechangelog[1].split('\n') %}
+                                            {{line}}<br/>
+                                            {% endfor %}
+                                            </div>
+                                        </td>
+                                    <tr>
+                                </table>
+                                {% endif %}
+                            </div><!-- End ChangeLogs -->
+                        </div><!-- End Tabs -->
+                    </td>
+                </tr>
+            </table>
+        </div>
+{% endblock %}

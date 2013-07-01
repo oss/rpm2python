@@ -3,6 +3,6 @@ config.py
 installflask.sh
 shell.py
 virtualenv.py
-flask/
+venv/
 getfile/*
 *.swp

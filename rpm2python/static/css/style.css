@@ -1,0 +1,720 @@
+/* Open Systems Solutions */
+/*
+ * -moz and -webkit are used to define rounded corners 
+ * and are part of the CSS3 draft and will not validate 
+ * until CSS3 is ratified by W3C.  Because of this, there
+ * is no support for IE.
+ * 
+ * Version 1.0: January 13, 2009
+ * 
+ */
+
+
+body {
+	background: #eae7dd; 
+	font: 0.8em Verdana, sans-serif; 
+	color: #333;
+	margin: 0px;
+	}
+a:link, a:visited {
+	color: #fff;
+	text-decoration: none;
+	}
+img {border: 0px;}
+p {text-indent: 1.5em;}
+
+/*canvas definition*/
+#main {
+	text-align: left;
+    margin: 5px;
+    margin-bottom: 50px;
+	min-width: 800px;
+}
+
+/*top banner*/
+#header {
+	background-image:url(../img/spread.gif);
+	background-repeat: repeat;
+	min-width: 800px;
+	height: 134px;
+	}
+#seal{
+	position: absolute;
+	left: 50%;
+	margin-left: -262px;
+	height: 97px;
+	width: 524px;
+	background-image: url(../img/header.gif);
+	}
+	
+/*Rutgers logo top left */
+#logo {
+	top: 20px; 
+	left: 1%; 
+	width: 223px;
+	height: 76px;
+	position: absolute;
+	float: right;
+
+	}
+	
+/* the horizontal menu starts here, menu in top right with drop */
+#listmenu {
+	top: 0; 
+	right: 1%; 
+	width: 230px;
+	height: 17px;
+	font-size: .9em;
+	color: #fff;
+	position: absolute;
+	float: right;
+	background-color: #1e1e1e;
+	-moz-border-radius-bottomleft: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-right-radius: px;
+	float: left; /*makes the div enclose the list */
+	}
+#listmenu ul {margin: 0 0 0 -40px;}/* indents ul from edge of container */
+#listmenu li:first-child {}
+#listmenu li {
+	float: left;	/* causes the list to align horizontally instead of stack */
+	position: relative; /* positioning context for the absolutely positioned drop-down */
+	list-style-type: none;	/* removes the bullet off each list item */
+	margin: 0;
+	}
+#listmenu a {
+	margin: 0; 
+	padding: 0;
+	display:block;
+	padding:0 6px; /*creates space each side of menu item's text */
+	text-decoration:none;	 /* removes the underlining of the link */
+	color:#fff;	/* sets the type color */
+	}
+#listmenu a:hover {
+	color:#f33;
+	}
+/* the horizontal menu ends here */
+
+/* ********** the drop-down starts here ************** */
+#listmenu ul li ul {
+	padding: 0;
+	margin: 0; /* prevents the TEMP value inheriting from the horiz menu - OK to remove if you remove TEMP above */
+	position: absolute; /* positions the drop-down ul in relation to its relatively positioned li parent */
+	width: 5em; /*sets the width of the menu - in combo with the li's 100% width, makes the menu stack*/
+	left: -1px; /*aligns the drop exactly under the menu */
+	z-index: 1;
+	background-color: #1e1e1e;
+	}
+#listmenu ul li ul li {
+	width: 50%; /* makes the list items fill the list container (ul) */
+	border-left: 1px solid #000; /*  three sides of each drop-down item */
+	border-right: 1px solid #000;
+	}
+/* make the drop-down display as the menu is rolled over */
+#listmenu ul li ul {display: none;} /* conceals the drop-down when menu not hovered */
+#listmenu ul li:hover ul {display: block; } /* shows the drop-down when the menu is hovered */
+
+/* END OF LIST-BASED MENU */
+
+/*Search box in top left */
+#search {
+	top: 30px; 
+	right: 1%;
+	width: 230px;
+	height: 25px;
+	position: absolute;
+	vertical-align: top;
+	text-align: right;
+	float: right;
+	z-index: 0;
+	color: #fff;
+	}
+	
+fieldset
+{
+     border: 0px;
+}	
+
+/*search text color*/
+#gs{
+	color: #fff;
+	font-size: .9em;
+}
+
+#go_button {
+	vertical-align: bottom;
+}
+
+/* Links below search box */
+#link_line {
+	top: 70px;  
+	right: 1%;
+	width: 230px;
+	height: 15px;
+	color: #fff;
+	position: absolute;
+	float: right;
+	font-size: .9em;
+	text-align: right;
+	}
+	
+#link_line  a:visited{
+	color: #fff;
+}
+	
+/* Menu bar .. more like a twitterline at the moment*/
+#menu {
+	position: absolute;
+	top: 100px;
+	padding: 0;
+	font: 1.2em Verdana, sans-serif;
+	text-align: left;
+	color: #fff;
+	min-width: 800px;
+	width: 100%;
+	}
+
+#menu a:visited{
+	color: #ddd;
+}
+
+#rpmList{
+        font-family: Verdana,Arial,Helvetica,sans-serif;
+        left: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        background: #202020;
+        font-size: 14px;
+        text-align: left;
+        width: 60%;
+        min-width: 800px;
+        margin-bottom: 10px;
+        color: #e7e7e7;
+        border: 1px solid #D2D2D2;
+        -moz-border-radius: 5px;
+    -webkit-border: 5px;
+}
+#rpmList  a:visited {
+        color: #fff;
+        text-decoration: none;
+        }
+#pushAction{
+        font-family: Verdana,Arial,Helvetica,sans-serif;
+        left: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        background: #202020;
+        font-size: 14px;
+        text-align: left;
+        width: 60%;
+        min-width: 800px;
+        margin-bottom: 10px;
+        color: #e7e7e7;
+        border: 1px solid #D2D2D2;
+        -moz-border-radius: 5px;
+    -webkit-border: 5px;
+}
+#pushAction  a:visited {
+        color: #fff;
+        text-decoration: none;
+        }
+#queueForm{
+        font-family: Verdana,Arial,Helvetica,sans-serif;
+        left: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        background: #202020;
+        font-size: 14px;
+        text-align: left;
+        width: 60%;
+        min-width: 800px;
+        margin-bottom: 10px;
+        color: #e7e7e7;
+        border: 1px solid #D2D2D2;
+        -moz-border-radius: 5px;
+    -webkit-border: 5px;
+}
+#queueForm  a:visited {
+        color: #fff;
+        text-decoration: none;
+        }
+#searchForm{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	left: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	background: #505050;
+	font-size: 30px;
+	text-align: center;
+	width: 60%;
+	min-width: 800px;
+	margin-bottom: 10px;
+	margin-top: 5px;	
+	color: #e7e7e7;
+	border: 1px solid #D2D2D2;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+}
+#searchForm  a:visited {
+	color: #fff;
+	text-decoration: none;
+	}
+.letters{
+	font-size: 12px;
+}
+select{
+	font-size: 20px;
+}
+#function_search_form {
+	background: #505050;
+	padding: 10px;
+	margin-bottom: -20px;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+}
+#function_name {
+	font-familty: lucida grande,tahoma,verdana,arial,sans-serif;
+	font-size: 30px;
+	border: 1px solid #cecece;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	padding: 3px;
+	width: 50%;
+	background: #F7F7F7;
+}
+#function_description {
+	text-align: left;
+	top: 240px;
+	width: 60%;
+	min-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 40px;
+}
+#function_description a, a:visited {
+	color: #666699;
+}
+.resultsLine{
+	width: 100%;
+	border-collapse: collapse;
+    font-size: 13px;
+}
+.resultsLine tbody tr:hover td{
+	background: #f0f0f0;
+}
+#resultsTable
+{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	background: #fff;
+	width: 100%;
+	border-collapse: collapse;
+	text-align: left;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	margin-bottom: 35px;
+}
+#resultsTable th{
+	font-size: 14px;
+	font-weight: normal;
+	color: #039;
+	padding: 10px 8px;
+	border-bottom: 2px solid #6678b1;
+}
+#resultsTable td{
+	border-bottom: 1px solid #ccc;
+	color: #669;
+	padding: 6px 8px;
+}
+#resultsTable tbody tr:hover td{
+	color: #009;
+}
+#queueForm td.centos5-rutgers{
+        background: #eceefb;
+	color: #666699;
+}
+#queueForm td.centos5-rutgers-testing{
+        background: #e3efe2;
+        font-style:bold;
+	color: #666699;
+}
+#queueForm td.centos5-rutgers-unstable{
+        background: #efcfcc;
+        font-style:bold;
+	color: #666699;
+}
+#queueForm td.centos5-rutgers-staging{
+        background: #eeddff;
+        font-style:bold;
+	color: #666699;
+}
+#resultsTable td.rutgers{
+	background: #eceefb;
+}
+#resultsTable td.rutgers-testing{
+	background: #e3efe2;
+	font-style:bold;
+}
+#resultsTable td.rutgers-unstable{
+	background: #efcfcc;
+	font-style:bold;
+}
+#resultsTable td.rutgers-staging{
+	background: #eeddff;
+	font-style:bold;
+}
+#resultsTable td.Ura{
+	background: #efedc5;
+}
+#resultsTable td.Ret{
+	background: #f3eff2;
+}
+
+#packageHeader{
+	text-align: center;
+	background: #fff;
+	color:#505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	width: 100%;
+	margin-bottom: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+#packagesTable{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #fff;
+	color:#505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	width: 100%;
+	padding: 3px;
+}
+#infoTable{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #fff;
+	color:#505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	width: 100%;
+	padding: 3px;
+}
+.clogTable{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #fff;
+	color:#505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	width: 100%;
+}
+.clogTable a:link{
+	color: #4444aa;
+}
+#files{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	max-width: 40%;
+	padding: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+#files a:link{
+	color: #fff;
+}
+#files a:visited{
+	color: #fff;
+}
+#srcfiles{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	max-width: 40%;
+	padding: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+#srcfiles a:link{
+	color: #fff;
+}
+#srcfiles a:visited{
+	color: #fff;
+}
+#provides{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	padding: 5px;
+	max-width: 30%;
+	margin: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+
+#provides a:link{
+	color: #fff;
+}
+
+#provides a:visited{
+	color: #fff;
+}
+#obsoletes{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	padding: 5px;
+	max-width: 30%;
+	margin: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+
+#obsoletes a:link{
+	color: #fff;
+}
+
+#obsoletes a:visited{
+	color: #fff;
+}
+#conflicts{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	padding: 5px;
+	max-width: 30%;
+	margin: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+
+#conflicts a:link{
+	color: #fff;
+}
+
+#conflicts a:visited{
+	color: #fff;
+}
+
+#requires{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-size: 12px;
+	line-height: 20px;
+	vertical-align: baseline;
+	letter-spacing: normal;
+	word-spacing: normal;
+	text-align: left;
+	background: #505050;
+	-moz-border-radius: 5px;
+    -webkit-border: 5px;
+	color: #fff;
+	float: left;
+	padding: 5px;
+	max-width: 30%;
+	margin: 5px;
+	margin-top: 10px;
+	margin-bottom: 35px;
+}
+
+#requires a:link{
+	color: #fff;
+}
+
+#requires a:visited{
+	color: #fff;
+}
+
+
+/*Footer definition*/
+#footer {
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	background-image:url(../img/footer.gif);
+	background-repeat: repeat;
+	padding-top: 2px;
+	padding-bottom: 1px;
+	margin-left: auto;
+	margin-right: auto;
+    color: #fff;
+	text-align: center; 
+    clear: both;
+    bottom: 0%;
+	min-width: 800px;
+}
+
+#footer a:visited{
+    color: #fff;
+}
+	
+#footer a:hover {
+	text-decoration:underline;
+}
+
+.headeru {
+	font-weight: bold;
+	font-family:Verdana,Arial,Helvetica,sans-serif;
+	letter-spacing:normal;
+	word-spacing:normal;
+	font-size: 14px;
+	line-height:20px;
+	padding-bottom: 8px;
+}
+
+.headeru tbody tr:hover td{
+	background: #ffffff;
+}
+.title {
+        font-size: 12px;
+        padding-left: 3px;
+        font-weight: bold;
+}
+
+.ttip {
+cursor: link;
+/*border-bottom: 1px dashed #000000;*/
+}
+
+.info-centos5-rutgers {
+display: none;
+border: 1px solid #000000;
+background-color: #eceefb;
+color: #666699;
+font-weight: bold;
+font-size: 16px;
+padding: 2px;
+}
+
+.info-centos5-rutgers-testing {
+display: none;
+border: 1px solid #000000;
+background-color: #e3efe2;
+color: #666699;
+font-weight: bold;
+font-size: 16px;
+padding: 2px;
+}
+
+.info-centos5-rutgers-unstable {
+display: none;
+border: 1px solid #000000;
+background-color: #efcfcc;
+color: #666699;
+font-weight: bold;
+font-size: 16px;
+padding: 2px;
+}
+
+.info-centos5-rutgers-staging {
+display: none;
+border: 1px solid #000000;
+background-color: #eeddff;
+color: #666699;
+font-weight: bold;
+font-size: 16px;
+padding: 2px;
+}
+
+.shellOutput{
+	left: 50%;
+	margin-left: auto;
+	margin-right: auto;
+        text-align: left;
+        background: #fff;
+        color:#505050;
+        -moz-border-radius: 5px;
+    -webkit-border: 5px;
+        width: 60%;
+        margin-bottom: 5px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+}
+
+#breadcrumbs{
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	background: #333;
+	color:#e5e5e5;
+	text-align: left;
+	width: 100%;
+	//padding-left: 10px;
+	//margin-bottom: 1px;
+	//border: 1px solid #D2D2D2;
+}
+
+#breadcrumbs a:visited{
+	color:#e5e5e5;
+}
+
+.queuetips {
+display: none;
+border: 1px solid #000000;
+background-color: #efeaf5;
+color: #333333;
+font-weight: bold;
+font-size: 14px;
+padding: 2px;
+max-width: 600px;
+}
+

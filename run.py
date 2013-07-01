@@ -1,6 +1,6 @@
 #!flask/bin/python
 
-from app import app
+from rpm2python import app
 
 if __name__ == '__main__':
     app.run(debug=True)
