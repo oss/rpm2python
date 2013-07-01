@@ -11,6 +11,7 @@ app.jinja_env.globals.update(ord=ord)
 app.jinja_env.globals.update(xrange=xrange)
 app.jinja_env.globals.update(chr=chr)
 app.jinja_env.globals.update(izip_longest=itertools.izip_longest)
+app.jinja_env.globals.update(reversed=reversed)
 
 if not app.debug:
     import logging

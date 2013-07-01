@@ -342,7 +342,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            {% for specchangelog, spec in izip_longest(package.specchangelogs, specchangelogs) %}
+                                            {% for specchangelog, spec in izip_longest(reversed(packagespecchangelogs), reversed(specchangelogs)) %}
                                             {% if loop.index < 5 %}
                                             * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
                                             {% for line in spec %}
@@ -351,7 +351,7 @@
                                             {% endif %}
                                             {% endfor %}
                                             <div style='display: none' id='clog'>
-                                            {% for specchangelog, spec in izip_longest(package.specchangelogs, specchangelogs) %}
+                                            {% for specchangelog, spec in izip_longest(packagespecchangelogs, specchangelogs) %}
                                             {% if loop.index >= 5 %}
                                             * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
                                             {% for line in spec %}

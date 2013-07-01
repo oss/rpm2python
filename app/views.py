@@ -131,8 +131,10 @@ def package(rpm_id, dist, f=None):
         softchangelogsplit = package.softwarechangelogs.Text.split('\n', 5)
         softwarechangelog = [softchangelogsplit[:4], softchangelogsplit[5]]
     specchangelogs = []
+    packagespecchangelogs = []
     for specchangelog in package.specchangelogs:
         specchangelogs.append(specchangelog.Text.split('\n'))
+        packagespecchangelogs.append(specchangelog)
 
     return render_template('package.html',
         rpm_id = rpm_id,
@@ -144,7 +146,8 @@ def package(rpm_id, dist, f=None):
         srcurl = srcurl,
         builton = builton,
         softwarechangelog = softwarechangelog,
-        specchangelogs = specchangelogs)
+        specchangelogs = specchangelogs,
+        packagespecchangelogs = packagespecchangelogs)
 
 #does a query for all packages in the database and puts them into a list that is then flattened and returned as a string
 #don't laugh, I don't acutally know any javascript
