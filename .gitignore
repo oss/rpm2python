@@ -7,3 +7,4 @@ getfile/*
 *.swp
 dist
 rpm2python.egg-info
+build
