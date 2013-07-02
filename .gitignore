@@ -6,3 +6,5 @@ virtualenv.py
 venv/
 getfile/*
 *.swp
+dist
+rpm2python.egg-info
