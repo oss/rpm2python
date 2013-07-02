@@ -1,2 +1,2 @@
 recursive-include rpm2python/templates *
-recursice-include rpm2python/static *
+recursive-include rpm2python/static *
