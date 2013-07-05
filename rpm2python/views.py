@@ -85,8 +85,8 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 #returns a page with info about the package that the user queried
-@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
-@app.route('/<regex("[\d]{5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
+@app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
+@app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
 def package(rpm_id, dist, f=None):
     #check if the user got to this page through a search
     #return a results list if so
