@@ -1,5 +1,5 @@
 from rpm2python import app
-from flask import render_template, redirect, url_for, make_response, request
+from flask import render_template, redirect, url_for, make_response, request, abort
 from flask.json import dumps
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
@@ -71,7 +71,7 @@ def index(letter=None, search=None, searchby=None):
             elif searchby == 'conflicts':
                 packages.append(newestquery(distro, Conflicts[distro].Resource.like("%" + search + "%"), Conflicts[distro]))
             else:
-                return render_template('404.html'), 404
+                abort(404)
 
 
         breadcrumbscontent = 'Search'
@@ -102,8 +102,8 @@ def package(rpm_id, dist, f=None):
         package = Packages['cent5'].query.filter_by(rpm_id=rpm_id).first()
         packnames = Packages['cent5'].query.filter_by(Name=package.Name, Version=package.Version).order_by(Packages['cent5'].Arch).all()
     else:
-        return render_template('404.html'), 404
-    
+        abort(404)
+
     #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
     #then give the user the file
     if f is not None:
@@ -159,3 +159,9 @@ def autocomplete():
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('index'))
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html',
+        breadcrumbscontent="Error",
+        form=SearchForm(request.form)), 500
