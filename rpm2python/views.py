@@ -14,7 +14,6 @@ import calendar
 import os
 import mimetypes
 import itertools
-import time
 
 #allows for urls to be matched to a regex
 class RegexConverter(BaseConverter):
@@ -29,7 +28,7 @@ app.url_map.converters['regex'] = RegexConverter
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<regex("[a-zA-z]"):letter>', methods = ['GET', 'POST'])
-@app.route('/search/<string:searchby>/<regex("[-\w/\.%]*"):search>', methods = ['GET', 'POST'])
+@app.route('/search/<regex("[\w]+"):searchby>/<regex("[-\w/\.%]*"):search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
     #if so, they are redirected to a new page with the results
@@ -85,9 +84,9 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 #returns a page with info about the package that the user queried
-@app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
-@app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
-def package(rpm_id, dist, f=None, thr=[]):
+@app.route('/<regex("[\d]{4,5}"):rpm_id>/<regex("centos[56]-rutgers[-\w]*"):dist>', methods = ['GET', 'POST'])
+@app.route('/<regex("[\d]{4,5}"):rpm_id>/<regex("centos[56]-rutgers[-\w]*"):dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
+def package(rpm_id, dist, f=None):
     #check if the user got to this page through a search
     #return a results list if so
     form = SearchForm(request.form)
@@ -105,22 +104,12 @@ def package(rpm_id, dist, f=None, thr=[]):
     else:
         return render_template('404.html'), 404
     
-    rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-    getfile = os.path.join(os.path.dirname(__file__), 'getfile')
-    if f is None:
-        thr.append(downunzip(rpmurl, getfile))
- 
     #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
     #then give the user the file
     if f is not None:
-        if len(thr) > 0:
-            while thr[0].is_alive():
-                time.sleep(1)
-        else:
-            thr.append(downunzip(rpmurl, getfile))
-            while thr[0].is_alive():
-                time.sleep(1)
-        thr = []
+        rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
+        getfile = os.path.join(os.path.dirname(__file__), 'getfile')
+        downunzip(rpmurl, getfile)
         f = os.path.join(getfile, f)
         resp = make_response(open(f).read())
         mimet, encoding = mimetypes.guess_type(f)

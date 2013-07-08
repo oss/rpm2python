@@ -3,7 +3,6 @@ from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts, Cent5Distribution, Cent5ChangeLogs, Cent5SoftwareChangeLogs, Cent5SpecChangeLogs
 from sqlalchemy import func
 import datetime
-from decorators import async
 import os
 import subprocess
 
@@ -119,7 +118,6 @@ def SRCRPM2url(package):
     ret += package
     return ret
 
-@async
 def downunzip(rpmurl, getfile):
     cwd = os.getcwd()
     try:
