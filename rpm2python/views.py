@@ -1,6 +1,6 @@
 from rpm2python import app
 from flask import render_template, redirect, url_for, make_response, request, abort
-from flask.json import dumps
+from flask.json import jsonify
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
@@ -57,19 +57,19 @@ def index(letter=None, search=None, searchby=None):
             if searchby == 'name':
                 packages.append(newestquery(distro, Packages[distro].Name.like("%" + search + "%")))
             elif searchby == 'file':
-                packages.append(newestquery(distro, Files[distro].Path.like("%" + search + "%"), Files[distro]))
+                packages.append(newestquery(distro, Files[distro].Path.like("%" + search + "%"), join=Files[distro]))
             elif searchby == 'provides':
-                packages.append(newestquery(distro, Provides[distro].Resource.like("%" + search + "%"), Provides[distro]))
+                packages.append(newestquery(distro, Provides[distro].Resource.like("%" + search + "%"), join=Provides[distro]))
             elif searchby == 'requires':
-                packages.append(newestquery(distro, Requires[distro].Resource.like("%" + search + "%"), Requires[distro]))
+                packages.append(newestquery(distro, Requires[distro].Resource.like("%" + search + "%"), join=Requires[distro]))
             elif searchby == 'description':
                 packages.append(newestquery(distro, Packages[distro].Description.like("%" + search + "%")))
             elif searchby == 'summary':
                 packages.append(newestquery(distro, Packages[distro].Summary.like("%" + search + "%")))
             elif searchby == 'obsoletes':
-                packages.append(newestquery(distro, Obsoletes[distro].Resource.like("%" + search + "%"), Obsoletes[distro]))
+                packages.append(newestquery(distro, Obsoletes[distro].Resource.like("%" + search + "%"), join=Obsoletes[distro]))
             elif searchby == 'conflicts':
-                packages.append(newestquery(distro, Conflicts[distro].Resource.like("%" + search + "%"), Conflicts[distro]))
+                packages.append(newestquery(distro, Conflicts[distro].Resource.like("%" + search + "%"), join=Conflicts[distro]))
             else:
                 abort(404)
 
@@ -148,13 +148,15 @@ def package(rpm_id, dist, f=None):
 
 #does a query for all packages in the database and puts them into a list that is then flattened and returned as a string
 #don't laugh, I don't acutally know any javascript
-@app.route('/autocomplete')
-def autocomplete():
+@app.route('/autocomplete/<string:search>')
+def autocomplete(search):
     results = []
     for distro in distros:
-        results.append(dbs[distro].session.query(Packages[distro].Name).group_by(Packages[distro].Name).all())
+        results.append(dbs[distro].session.query(Packages[distro].Name).filter(Packages[distro].Name.like('%' + search + '%')).group_by(Packages[distro].Name).all())
     flattened = list(itertools.chain.from_iterable(results[0]))
-    return dumps(flattened)
+    ret = {}
+    ret['array'] = flattened
+    return jsonify(ret)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -42,11 +42,13 @@
             evaluated as an array-->
         <script type="text/javascript">
             $(document).ready(function() {
-                $.ajax({
-                    url: '{{ url_for("autocomplete") }}',
-                    success: function (data) {
-                        $('#function_name').autocomplete(eval(data));
-                    }
+                $('#function_name').change(function () {
+                    $.ajax({
+                        url: '{{ url_for("autocomplete", search="") }}' + $('#function_name').val(),
+                        success: function (data) {
+                            $('#function_name').autocomplete($.parseJSON(data).array);
+                        }
+                    });
                 });
             });
         </script>
