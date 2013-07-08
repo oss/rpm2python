@@ -59,6 +59,10 @@ SpecChangeLogs = {
 #PackageName is used in the index template for ordering purposes
 #it groups packages of the same name together, and gets the latest version
 #from each repo to display it
+#
+#name: name shared by the packages
+#archs: the architectures of the packages
+#packages: the actual packages, these are the newest in each repo with this name
 class PackageName():
     def __init__(self, name, archs, packages):
         self.name = name
