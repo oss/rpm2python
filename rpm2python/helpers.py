@@ -3,6 +3,9 @@ from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts, Cent5Distribution, Cent5ChangeLogs, Cent5SoftwareChangeLogs, Cent5SpecChangeLogs
 from sqlalchemy import func
 import datetime
+from decorators import async
+import os
+import subprocess
 
 #This set of dictionaries allows easy access to the database
 #because the databases are identical, you can change which database you are querying by changing the key
@@ -111,6 +114,21 @@ def SRCRPM2url(package):
             ret += word + '/'
     ret += package
     return ret
+
+@async
+def downunzip(rpmurl, getfile):
+    cwd = os.getcwd()
+    try:
+        subprocess.Popen(['/bin/rm', '-r', '{0}'.format(getfile)]).wait()
+    except OSError:
+        pass
+    os.mkdir(getfile)
+    os.chdir(getfile)
+    subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
+    rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', '{0}'.format(os.listdir(getfile)[0])], stdout=subprocess.PIPE)
+    subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
+    rpm2cpio.stdout.close()
+    os.chdir(cwd)
 
 #converts a unix timestamp to a human readable format
 def unix2standard(date):

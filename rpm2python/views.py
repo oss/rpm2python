@@ -5,16 +5,16 @@ from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
-from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard
+from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from helpers import distros, dbs
 
 from datetime import date, timedelta
 import calendar
-import subprocess
 import os
 import mimetypes
 import itertools
+import time
 
 #allows for urls to be matched to a regex
 class RegexConverter(BaseConverter):
@@ -87,7 +87,7 @@ def index(letter=None, search=None, searchby=None):
 #returns a page with info about the package that the user queried
 @app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>', methods = ['GET', 'POST'])
 @app.route('/<regex("[\d]{4,5}"):rpm_id>/<string:dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
-def package(rpm_id, dist, f=None):
+def package(rpm_id, dist, f=None, thr=[]):
     #check if the user got to this page through a search
     #return a results list if so
     form = SearchForm(request.form)
@@ -104,24 +104,23 @@ def package(rpm_id, dist, f=None):
         packnames = Packages['cent5'].query.filter_by(Name=package.Name, Version=package.Version).order_by(Packages['cent5'].Arch).all()
     else:
         return render_template('404.html'), 404
+    
+    rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
+    getfile = os.path.join(os.path.dirname(__file__), 'getfile')
+    if f is None:
+        thr.append(downunzip(rpmurl, getfile))
  
     #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
     #then give the user the file
     if f is not None:
-        rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        cwd = os.getcwd()
-        getfile = os.path.join(os.path.dirname(__file__), 'getfile')
-        try:
-            subprocess.Popen(['/bin/rm', '-r', '{0}'.format(getfile)]).wait()
-        except OSError:
-            pass
-        os.mkdir(getfile)
-        os.chdir(getfile)
-        subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
-        rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', '{0}'.format(os.listdir(getfile)[0])], stdout=subprocess.PIPE)
-        subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
-        rpm2cpio.stdout.close()
-        os.chdir(cwd)
+        if len(thr) > 0:
+            while thr[0].is_alive():
+                time.sleep(1)
+        else:
+            thr.append(downunzip(rpmurl, getfile))
+            while thr[0].is_alive():
+                time.sleep(1)
+        thr = []
         f = os.path.join(getfile, f)
         resp = make_response(open(f).read())
         mimet, encoding = mimetypes.guess_type(f)
