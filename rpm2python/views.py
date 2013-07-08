@@ -109,13 +109,22 @@ def package(rpm_id, dist, f=None):
     #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        os.chdir('getfile')
-        subprocess.Popen(['rm -rf *'], shell=True).wait()
-        subprocess.Popen(['wget', rpmurl]).wait()
-        subprocess.Popen(['rpm2cpio *.rpm | cpio -idmv'], shell=True).wait()
-        os.chdir('..')
-        resp = make_response(open('getfile/' + f).read())
-        mimet, encoding = mimetypes.guess_type('getfile/' + f)
+        cwd = os.getcwd()
+        getfile = os.path.join(os.path.dirname(__file__), 'getfile')
+        try:
+            subprocess.Popen(['/bin/rm', '-r', '{0}'.format(getfile)]).wait()
+        except OSError:
+            pass
+        os.mkdir(getfile)
+        os.chdir(getfile)
+        subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
+        rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', '{0}'.format(os.listdir(getfile)[0])], stdout=subprocess.PIPE)
+        subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
+        rpm2cpio.stdout.close()
+        os.chdir(cwd)
+        f = os.path.join(getfile, f)
+        resp = make_response(open(f).read())
+        mimet, encoding = mimetypes.guess_type(f)
         if mimet is not None:
             resp.content_type = mimet
         else:
