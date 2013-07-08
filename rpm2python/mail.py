@@ -19,7 +19,7 @@ class MailHandler(logging.Handler):
             p.write("Subject: %s\n" % self.subject)
             p.write(msg)
             p.close()
-        except (KeyboardInterrupt, SystemExit):
+        except SystemExit:
             raise
         except:
             self.handleError(record)
