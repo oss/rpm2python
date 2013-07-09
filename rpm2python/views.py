@@ -151,11 +151,8 @@ def package(rpm_id, dist, f=None):
 @app.route('/autocomplete')
 def autocomplete():
     results = []
-    search = request.args.get('search')
-    if search is None:
-        abort(404)
     for distro in distros:
-        results.append(dbs[distro].session.query(Packages[distro].Name).filter(Packages[distro].Name.like('%' + search + '%')).group_by(Packages[distro].Name).all())
+        results.append(dbs[distro].session.query(Packages[distro].Name).group_by(Packages[distro].Name).all())
     flattened = list(itertools.chain.from_iterable(results[0]))
     ret = {}
     ret['comp'] = flattened

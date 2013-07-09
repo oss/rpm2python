@@ -41,13 +41,11 @@
             text field is upated -->
         <script type="text/javascript">
             $(function() {
-                $('#function_name').autocomplete({
-                    source: function(request, response) {
-                        $.getJSON('{{url_for("autocomplete")}}', {
-                            search: request
-                        }, function(data) {
-                            response(data.comp);
-                        });
+                $.ajax({
+                    url: '{{ url_for("autocomplete") }}',
+                    success: function(data) {
+                        console.log(data);
+                        $('#function_name').autocomplete(data.comp);
                     }
                 });
             });
