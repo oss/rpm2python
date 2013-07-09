@@ -148,14 +148,17 @@ def package(rpm_id, dist, f=None):
 
 #does a query for all packages in the database and puts them into a list that is then flattened and returned as a string
 #don't laugh, I don't acutally know any javascript
-@app.route('/autocomplete/<string:search>')
-def autocomplete(search):
+@app.route('/autocomplete')
+def autocomplete():
     results = []
+    search = request.args.get('search')
+    if search is None:
+        abort(404)
     for distro in distros:
         results.append(dbs[distro].session.query(Packages[distro].Name).filter(Packages[distro].Name.like('%' + search + '%')).group_by(Packages[distro].Name).all())
     flattened = list(itertools.chain.from_iterable(results[0]))
     ret = {}
-    ret['array'] = flattened
+    ret['comp'] = flattened
     return jsonify(ret)
 
 @app.errorhandler(404)

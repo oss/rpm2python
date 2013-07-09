@@ -37,18 +37,18 @@
         }
         //]]>
         </script>
-        <!--The following javascript is extremely hacky and should never be spoken of again
-            this function uses jquery autocomplete and takes a string from autocomplete that is then
-            evaluated as an array-->
+        <!-- This javascript calls some ajax which calls the autocomplete function whenever the
+            text field is upated -->
         <script type="text/javascript">
-            $(document).ready(function() {
-                $('#function_name').change(function () {
-                    $.ajax({
-                        url: '{{ url_for("autocomplete", search="") }}' + $('#function_name').val(),
-                        success: function (data) {
-                            $('#function_name').autocomplete($.parseJSON(data).array);
-                        }
-                    });
+            $(function() {
+                $('#function_name').autocomplete({
+                    source: function(request, response) {
+                        $.getJSON('{{url_for("autocomplete")}}', {
+                            search: request
+                        }, function(data) {
+                            response(data.comp);
+                        });
+                    }
                 });
             });
         </script>
