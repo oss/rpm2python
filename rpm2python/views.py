@@ -108,8 +108,8 @@ def package(rpm_id, dist, f=None):
     #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        getfile = os.path.join(os.path.dirname(__file__), 'getfile')
-        downunzip(rpmurl, getfile)
+        getfile = os.path.join(os.path.dirname(__file__), 'getfile', package.build_name)
+        downunzip(rpmurl, getfile, f)
         f = os.path.join(getfile, f)
         resp = make_response(open(f).read())
         mimet, encoding = mimetypes.guess_type(f)

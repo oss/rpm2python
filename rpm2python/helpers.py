@@ -118,7 +118,9 @@ def SRCRPM2url(package):
     ret += package
     return ret
 
-def downunzip(rpmurl, getfile):
+def downunzip(rpmurl, getfile, f):
+    if os.path.exists(os.path.join(getfile, f)):
+        return
     cwd = os.getcwd()
     try:
         subprocess.Popen(['/bin/rm', '-r', '{0}'.format(getfile)]).wait()
