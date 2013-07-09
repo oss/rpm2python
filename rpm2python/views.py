@@ -146,8 +146,7 @@ def package(rpm_id, dist, f=None):
         specchangelogs = specchangelogs,
         packagespecchangelogs = packagespecchangelogs)
 
-#does a query for all packages in the database and puts them into a list that is then flattened and returned as a string
-#don't laugh, I don't acutally know any javascript
+#does a query for all packages in the database and puts them into a list that is then flattened and returned as json
 @app.route('/autocomplete')
 def autocomplete():
     results = []
