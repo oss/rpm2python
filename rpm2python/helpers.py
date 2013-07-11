@@ -5,6 +5,9 @@ from sqlalchemy import func
 import datetime
 import os
 import subprocess
+from decorators import async
+import time
+import shutil
 
 #This set of dictionaries allows easy access to the database
 #because the databases are identical, you can change which database you are querying by changing the key
@@ -122,17 +125,22 @@ def downunzip(rpmurl, getfile, f):
     if os.path.exists(os.path.join(getfile, f)):
         return
     cwd = os.getcwd()
-    try:
-        subprocess.Popen(['/bin/rm', '-r', '{0}'.format(getfile)]).wait()
-    except OSError:
-        pass
-    os.mkdir(getfile)
+    os.makedirs(getfile)
     os.chdir(getfile)
     subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
     rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', '{0}'.format(os.listdir(getfile)[0])], stdout=subprocess.PIPE)
     subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
     rpm2cpio.stdout.close()
     os.chdir(cwd)
+    timed_callback(10 * 60, rm_getfile, getfile)
+
+@async
+def timed_callback(sleep_time, callback, *args, **kwargs):
+    time.sleep(sleep_time)
+    callback(*args, **kwargs)
+
+def rm_getfile(getfile):
+    shutil.rmtree(getfile)
 
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
