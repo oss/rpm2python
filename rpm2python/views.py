@@ -5,7 +5,7 @@ from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
-from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip
+from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip, timed_callback, rm_getfile
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from helpers import distros, dbs
 
@@ -113,6 +113,7 @@ def package(rpm_id, dist, f=None):
         f = os.path.join(getfile, f)
         resp = make_response(open(f).read())
         mimet, encoding = mimetypes.guess_type(f)
+        timed_callback(10 * 60, rm_getfile, getfile)
         if mimet is not None:
             resp.content_type = mimet
         else:

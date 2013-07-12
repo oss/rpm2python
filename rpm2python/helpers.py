@@ -132,7 +132,6 @@ def downunzip(rpmurl, getfile, f):
     subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
     rpm2cpio.stdout.close()
     os.chdir(cwd)
-    timed_callback(10 * 60, rm_getfile, getfile)
 
 @async
 def timed_callback(sleep_time, callback, *args, **kwargs):
