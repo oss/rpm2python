@@ -139,7 +139,8 @@ def timed_callback(sleep_time, callback, *args, **kwargs):
     callback(*args, **kwargs)
 
 def rm_getfile(getfile):
-    shutil.rmtree(getfile)
+    if os.path.exists(getfile):
+        shutil.rmtree(getfile)
 
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
