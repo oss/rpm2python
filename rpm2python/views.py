@@ -27,8 +27,8 @@ app.url_map.converters['regex'] = RegexConverter
 #it extends the base layout and handles search results
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
-@app.route('/<regex("[a-zA-z]"):letter>', methods = ['GET', 'POST'])
-@app.route('/search/<regex("[\w]+"):searchby>/<regex("[-\w/\.%]*"):search>', methods = ['GET', 'POST'])
+@app.route('/<regex(r"[a-zA-z]"):letter>', methods = ['GET', 'POST'])
+@app.route('/search/<regex(r"[\w]+"):searchby>/<regex(r"[-\w/\.%]*"):search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
     #if so, they are redirected to a new page with the results
@@ -84,8 +84,8 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 #returns a page with info about the package that the user queried
-@app.route('/<regex("[\d]{4,5}"):rpm_id>/<regex("centos[56]-rutgers[-\w]*"):dist>', methods = ['GET', 'POST'])
-@app.route('/<regex("[\d]{4,5}"):rpm_id>/<regex("centos[56]-rutgers[-\w]*"):dist>/getfile/<regex("([-\w\.]+/?(?!\.))*"):f>')
+@app.route('/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[56]-rutgers[-\w]*"):dist>', methods = ['GET', 'POST'])
+@app.route('/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[56]-rutgers[-\w]*"):dist>/getfile/<regex(r"([-\w\.]+/?(?!\.))*"):f>')
 def package(rpm_id, dist, f=None):
     #check if the user got to this page through a search
     #return a results list if so
