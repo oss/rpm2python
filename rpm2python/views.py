@@ -5,7 +5,7 @@ from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
-from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip, timed_callback, rm_getfile
+from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from helpers import distros, dbs
 
@@ -14,6 +14,8 @@ import calendar
 import os
 import mimetypes
 import itertools
+import time
+import shutil
 
 #allows for urls to be matched to a regex
 class RegexConverter(BaseConverter):
@@ -108,12 +110,12 @@ def package(rpm_id, dist, f=None):
     #then give the user the file
     if f is not None:
         rpmurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, package.Arch, '.'.join([package.nvr, package.Arch, 'rpm'])])
-        getfile = os.path.join(app.config['GETFILE_DIR'], package.build_name)
+        getfile = os.path.join(app.config['TMP_DIR'], package.build_name + str(time.time()))
         downunzip(rpmurl, getfile, f)
         f = os.path.join(getfile, f)
         resp = make_response(open(f).read())
         mimet, encoding = mimetypes.guess_type(f)
-        timed_callback(10 * 60, rm_getfile, getfile)
+        shutil.rmtree(getfile)
         if mimet is not None:
             resp.content_type = mimet
         else:

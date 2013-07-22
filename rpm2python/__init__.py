@@ -1,6 +1,7 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import itertools
+import tempfile
 
 app = Flask(__name__)
 app.config.from_pyfile('/etc/rpm2python.cfg')
@@ -11,6 +12,7 @@ app.jinja_env.globals.update(xrange=xrange)
 app.jinja_env.globals.update(chr=chr)
 app.jinja_env.globals.update(izip_longest=itertools.izip_longest)
 app.jinja_env.globals.update(reversed=reversed)
+app.config['TMP_DIR'] = tempfile.mkdtemp(prefix='rpm2python')
 
 if not app.debug:
     import logging
