@@ -3,6 +3,10 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import itertools
 import tempfile
 
+import signal
+import sys
+import shutil
+
 app = Flask(__name__)
 app.config.from_pyfile('/etc/rpm2python.cfg')
 db1 = SQLAlchemy(app)
@@ -13,6 +17,13 @@ app.jinja_env.globals.update(chr=chr)
 app.jinja_env.globals.update(izip_longest=itertools.izip_longest)
 app.jinja_env.globals.update(reversed=reversed)
 app.config['TMP_DIR'] = tempfile.mkdtemp(prefix='rpm2python')
+
+def signal_handler(signal, frame):
+    global app
+    shutil.rmtree(app.config['TMP_DIR'])
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 if not app.debug:
     import logging
