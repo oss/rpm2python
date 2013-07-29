@@ -2,6 +2,6 @@
 installflask.sh
 shell.py
 virtualenv.py
-venv/
+venv
 rpm2python/getfile/*
 *.swp
