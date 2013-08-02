@@ -30,7 +30,7 @@ app.url_map.converters['regex'] = RegexConverter
 @app.route('/', methods = ['GET', 'POST'])
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<regex(r"[a-zA-z]"):letter>', methods = ['GET', 'POST'])
-@app.route('/search/<regex(r"[\w]+"):searchby>/<regex(r"[-\w/\.%]*"):search>', methods = ['GET', 'POST'])
+@app.route('/search/<regex(r"[\w]+"):searchby>/<regex(r"[-\w/\.%_\(\)]*"):search>', methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     #checks if the user arrived to this page from a search form
     #if so, they are redirected to a new page with the results
@@ -98,13 +98,15 @@ def package(rpm_id, dist, f=None):
     #find out the distribution the package is in
     #find the package by rpm_id and then get all the other packages with the same name
     if 'centos6' in dist:
-        package = Packages['cent6'].query.filter_by(rpm_id=rpm_id).first()
-        packnames = Packages['cent6'].query.filter_by(Name=package.Name, Version=package.Version).order_by(Packages['cent6'].Arch).all()
+        distro = 'cent6'
     elif 'centos5' in dist:
-        package = Packages['cent5'].query.filter_by(rpm_id=rpm_id).first()
-        packnames = Packages['cent5'].query.filter_by(Name=package.Name, Version=package.Version).order_by(Packages['cent5'].Arch).all()
+        distro = 'cent5'
     else:
         abort(404)
+    package = Packages[distro].query.filter_by(rpm_id=rpm_id).first()
+    packnames = Packages[distro].query.filter_by(Name=package.Name, Version=package.Version).order_by(Packages[distro].Arch).all()
+    if package.Name != package.build_name:
+        packnames.append(Packages[distro].query.filter_by(Name=package.build_name, Version=package.Version, Arch='src').first())
 
     #if the user is trying to download a file, download the package from koji and exrtract it with rpm2cpio
     #then give the user the file
