@@ -45,7 +45,11 @@
                     url: '{{ url_for("autocomplete") }}',
                     success: function(data) {
                         console.log(data);
-                        $('#function_name').autocomplete(data.comp);
+                        $('#function_name').autocomplete(data.comp, {
+                            matchContains: true,
+                            minChars: 2,
+                            selectFirst: false
+                        });
                     }
                 });
             });
