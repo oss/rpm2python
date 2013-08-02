@@ -104,20 +104,6 @@ def buildpacknames(packages):
         packnames.append(PackageName(name, archname[name], packname[name]))
     return packnames
 
-#this converts a package name to a url in koji
-#it will probably be removed in refactoring
-def SRCRPM2url(package):
-    ret = 'http://koji.rutgers.edu/packages/'
-    words = package.split('-')
-    last = words[-1].split('.')
-    words[-1] = last[0] + '.' + last[1]
-    words.append(last[2])
-    for word in words:
-        if word != 'debuginfo':
-            ret += word + '/'
-    ret += package
-    return ret
-
 def downunzip(rpmurl, getfile, f):
     if os.path.exists(os.path.join(getfile, f)):
         return

@@ -5,7 +5,7 @@ from forms import SearchForm
 from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
-from helpers import newestquery, buildpacknames, SRCRPM2url, unix2standard, downunzip
+from helpers import newestquery, buildpacknames, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from helpers import distros, dbs
 
@@ -124,7 +124,8 @@ def package(rpm_id, dist, f=None):
 
     #a few extra variables that will be needed to print out in the template
     breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel
-    srcurl = SRCRPM2url(package.SRCRPM)
+    #srcurl = SRCRPM2url(package.SRCRPM)
+    srcurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, 'src', package.SRCRPM])
     builton = unix2standard(package.Date)
     softwarechangelog = ""
     if package.softwarechangelogs is not None:
