@@ -128,6 +128,16 @@ def unmask(mask):
 
 app.jinja_env.globals.update(unmask=unmask)
 
+def readsize(byte_s):
+    if byte_s / 1024 == 0:
+        return "{0} B".format(byte_s)
+    byte_s /= 1024
+    if byte_s / 1024 == 0:
+        return "{0} KB".format(byte_s)
+    return "{0} MB".format(byte_s / 1024)
+
+app.jinja_env.globals.update(readsize=readsize)
+
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
     return datetime.datetime.fromtimestamp(int(date)).strftime("%b %d %Y %I:%M %p")
