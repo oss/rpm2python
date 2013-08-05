@@ -124,33 +124,32 @@ def package(rpm_id, dist, f=None):
             resp.content_type = 'application/x-empty'
         return resp
 
-    #a few extra variables that will be needed to print out in the template
-    breadcrumbscontent = package.Name + '-' + package.Version + '-' + package.Rel
-    #srcurl = SRCRPM2url(package.SRCRPM)
-    srcurl = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, 'src', package.SRCRPM])
-    builton = unix2standard(package.Date)
+    kwargs = {}
+
     softwarechangelog = ""
     if package.softwarechangelogs is not None:
         softchangelogsplit = package.softwarechangelogs.Text.split('\n', 5)
         softwarechangelog = [softchangelogsplit[:4], softchangelogsplit[5]]
+        kwargs['softwarechangelog'] = softwarechangelog
     specchangelogs = []
     packagespecchangelogs = []
     for specchangelog in package.specchangelogs:
-        specchangelogs.append(specchangelog.Text.split('\n'))
+        specchangelogs.append([x for x in specchangelog.Text.split('\n')])
         packagespecchangelogs.append(specchangelog)
 
-    return render_template('package.html',
-        rpm_id = rpm_id,
-        dist = dist,
-        breadcrumbscontent = breadcrumbscontent,
-        package = package,
-        packnames = packnames,
-        form = form,
-        srcurl = srcurl,
-        builton = builton,
-        softwarechangelog = softwarechangelog,
-        specchangelogs = specchangelogs,
-        packagespecchangelogs = packagespecchangelogs)
+    #kwargs to send to template
+    kwargs['rpm_id'] = rpm_id
+    kwargs['dist'] = dist
+    kwargs['breadcrumbscontent'] = package.Name + '-' + package.Version + '-' + package.Rel
+    kwargs['package'] = package
+    kwargs['packnames'] = packnames
+    kwargs['form'] = form
+    kwargs['srcurl'] = 'http://koji.rutgers.edu/packages/' + '/'.join([package.build_name, package.Version, package.Rel, 'src', package.SRCRPM])
+    kwargs['builton'] = unix2standard(package.Date)
+    kwargs['specchangelogs'] = specchangelogs
+    kwargs['packagespecchangelogs'] = packagespecchangelogs
+
+    return render_template('package.html', **kwargs)
 
 #does a query for all packages in the database and puts them into a list that is then flattened and returned as json
 @app.route('/autocomplete')

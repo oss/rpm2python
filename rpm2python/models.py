@@ -83,7 +83,7 @@ class Cent6Packages(db1.Model):
     provides = db1.relationship('Cent6Provides', backref='package', lazy='dynamic')
     requires = db1.relationship('Cent6Requires', backref='package', lazy='dynamic')
     softwarechangelogs = db1.relationship('Cent6SoftwareChangeLogs', backref='package', uselist=False)
-    specchangelogs = db1.relationship('Cent6SpecChangeLogs', backref='package', lazy='dynamic')
+    specchangelogs = db1.relationship('Cent6SpecChangeLogs', order_by="Cent6SpecChangeLogs.ID", backref='package', lazy='dynamic')
 
 class Cent6Provides(db1.Model):
     __tablename__ = 'Provides'
@@ -197,7 +197,7 @@ class Cent5Packages(db2.Model):
     provides = db2.relationship('Cent5Provides', backref='package', lazy='dynamic')
     requires = db2.relationship('Cent5Requires', backref='package', lazy='dynamic')
     softwarechangelogs = db2.relationship('Cent5SoftwareChangeLogs', backref='package', uselist=False)
-    specchangelogs = db2.relationship('Cent5SpecChangeLogs', backref='package', lazy='dynamic')
+    specchangelogs = db2.relationship('Cent5SpecChangeLogs', order_by="Cent5SpecChangeLogs.ID", backref='package', lazy='dynamic')
 
 class Cent5Provides(db2.Model):
     __tablename__ = 'Provides'

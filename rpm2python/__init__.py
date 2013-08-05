@@ -14,7 +14,7 @@ db2 = SQLAlchemy(app)
 app.jinja_env.globals.update(ord=ord)
 app.jinja_env.globals.update(xrange=xrange)
 app.jinja_env.globals.update(chr=chr)
-app.jinja_env.globals.update(izip_longest=itertools.izip_longest)
+app.jinja_env.globals.update(izip=itertools.izip)
 app.jinja_env.globals.update(reversed=reversed)
 app.config['TMP_DIR'] = tempfile.mkdtemp(prefix='rpm2python')
 

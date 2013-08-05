@@ -60,7 +60,7 @@
                                     Platform
                                 </td>
                                 <td>
-                                    Linux/{% for packname in packnames if packname.Arch != 'src' %}{% if not loop.last %}{{packname.Arch}},{% else %}{{packname.Arch}}{% endif %}{% endfor %}
+                                    Linux/{% for packname in packnames if packname.Arch != 'src' %}{% if not loop.last %}{{packname.Arch}}, {% else %}{{packname.Arch}}{% endif %}{% endfor %}
                                 </td>
                             </tr>
                             <tr>
@@ -154,7 +154,7 @@
                                     <a href='http://koji.rutgers.edu/packages/{{packname.build_name}}/{{packname.Version}}/{{packname.Rel}}/{{packname.Arch}}/{{packname.nvr}}.{{packname.Arch}}.rpm'>{{packname.nvr}}.{{packname.Arch}}.rpm</a>
                                 </td>
                             </tr>
-                                {% if package.Name in packname.DBGRPM %}
+                                {% if 'debug' in packname.DBGRPM %}
                             <tr>
                                 <td class='title'>
                                     Debug-{{packname.Arch}}
@@ -342,7 +342,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            {% for specchangelog, spec in izip_longest(reversed(packagespecchangelogs), reversed(specchangelogs)) %}
+                                            {% for specchangelog, spec in izip(packagespecchangelogs, specchangelogs) %}
                                             {% if loop.index < 5 %}
                                             * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
                                             {% for line in spec %}
@@ -351,7 +351,7 @@
                                             {% endif %}
                                             {% endfor %}
                                             <div style='display: none' id='clog'>
-                                            {% for specchangelog, spec in izip_longest(packagespecchangelogs, specchangelogs) %}
+                                            {% for specchangelog, spec in izip(packagespecchangelogs, specchangelogs) %}
                                             {% if loop.index >= 5 %}
                                             * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
                                             {% for line in spec %}
@@ -363,7 +363,7 @@
                                         </td>
                                     </tr>
                                 </table><!-- End Spec ChangeLog -->
-                                {% if "" not in softwarechangelog %}
+                                {% if softwarechangelog is defined %}
                                 <table class="clogTable" cellspacing="0">
                                     <tr>
                                         <td class='headeru ttip' id='swclogtip'>
