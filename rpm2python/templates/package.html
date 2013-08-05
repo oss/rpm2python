@@ -273,7 +273,7 @@
                                                 {% for provide in package.provides %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}}{% if "" != provide.Version %} = {{provide.Version}}{% endif %}</a>
+                                                        <a href='{{url_for('index', search=provide.Resource, searchby='provides')}}'>{{provide.Resource}}{% if "" != provide.Version %} {{unmask(provide.Flags)}} {{provide.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Provides -->
                                             </table>
@@ -289,7 +289,7 @@
                                                 {% for require in package.requires %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}}{% if "" != require.Version %} = {{require.Version}}{% endif %}</a>
+                                                        <a href='{{url_for('index', search=require.Resource, searchby='requires')}}'>{{require.Resource}}{% if "" != require.Version %} {{unmask(require.Flags)}} {{require.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Requires -->
                                             </table>
@@ -307,7 +307,7 @@
                                                 {% for obsolete in package.obsoletes %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}}{% if "" != obsolete.Version %} = {{obsolete.Version}}{% endif %}</a>
+                                                        <a href='{{url_for('index', search=obsolete.Resource, searchby='obsoletes')}}'>{{obsolete.Resource}}{% if "" != obsolete.Version %} {{unmask(obsolete.Flags)}} {{obsolete.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Obsoletes -->
                                             </table>
@@ -323,7 +323,7 @@
                                                 {% for conflict in package.conflicts %}
                                                 <tr>
                                                     <td style='padding-top: 2px; padding-bottom: 2px;'>
-                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}}{% if "" != conflict.Version %} = {{conflict.Version}}{% endif %}</a>
+                                                        <a href='{{url_for('index', search=conflict.Resource, searchby='conflicts')}}'>{{conflict.Resource}}{% if "" != conflict.Version %} {{unmask(conflict.Flags)}} {{conflict.Version}}{% endif %}</a>
                                                     </td>
                                                 </tr>{% endfor %}<!-- End Conflicts -->
                                             </table>

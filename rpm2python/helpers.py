@@ -1,4 +1,4 @@
-from rpm2python import db1, db2
+from rpm2python import db1, db2, app
 from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts, Cent6Distribution, Cent6ChangeLogs, Cent6SoftwareChangeLogs, Cent6SpecChangeLogs
 from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts, Cent5Distribution, Cent5ChangeLogs, Cent5SoftwareChangeLogs, Cent5SpecChangeLogs
 from sqlalchemy import func
@@ -115,6 +115,18 @@ def downunzip(rpmurl, getfile, f):
     subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
     rpm2cpio.stdout.close()
     os.chdir(cwd)
+
+def unmask(mask):
+    output = ""
+    if 2 & mask:
+        output += "<"
+    if 4 & mask:
+        output += ">"
+    if 8 & mask:
+        output += "="
+    return output
+
+app.jinja_env.globals.update(unmask=unmask)
 
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
