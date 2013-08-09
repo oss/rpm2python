@@ -111,7 +111,7 @@ def downunzip(rpmurl, getfile, f):
     os.makedirs(getfile)
     os.chdir(getfile)
     subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
-    rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', '{0}'.format(os.listdir(getfile)[0])], stdout=subprocess.PIPE)
+    rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', os.listdir(getfile)[0]], stdout=subprocess.PIPE)
     subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
     rpm2cpio.stdout.close()
     os.chdir(cwd)
