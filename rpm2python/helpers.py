@@ -15,10 +15,11 @@ import datetime
 import os
 import subprocess
 
-#This set of dictionaries allows easy access to the database
-#because the databases are identical, you can change which database
-#you are querying by changing the key
-#add more if more databases are added
+'''This set of dictionaries allows easy access to the database.
+Because the databases are identical, you can change which database
+you are querying by changing the key.
+Add more if more databases are added
+'''
 distros = ['cent6', 'cent5']
 
 dbs = {
@@ -65,15 +66,16 @@ SpecChangeLogs = {
     'cent6': Cent6SpecChangeLogs,
     'cent5': Cent5SpecChangeLogs}
 
-#PackageName is used in the index template for ordering purposes
-#it groups packages of the same name together, and gets the latest version
-#from each repo to display it
-#
-#name: name shared by the packages
-#archs: the architectures of the packages
-#packages: the actual packages, these are
-#   the newest in each repo with this name
 class PackageName():
+    """PackageName is used in the index template for ordering purposes
+    it groups packages of the same name together, and gets
+    the latest version from each repo to display it
+
+    name: name shared by the packages
+    archs: the architectures of the packages
+    packages: the actual packages, these are
+       the newest in each repo with this name
+    """
     def __init__(self, name, archs, packages):
         self.name = name
         self.packages = packages
@@ -99,9 +101,11 @@ class PackageName():
             self.newest[package[1]] = package[0]
 
 
-#puts the given list of packages into a container object called PackageName
-#this stores all packages of the same name together
 def buildpacknames(packages):
+    """Puts the given list of packages into a
+    container object called PackageName this stores all packages
+    of the same name together
+    """
     packnames = []
     packname = {}
     names = []
@@ -124,6 +128,9 @@ def buildpacknames(packages):
 
 
 def downunzip(rpmurl, getfile, f):
+    """Downloads and unzips the rpm at rpmurl to the directory
+    getfile/f.
+    """
     if os.path.exists(os.path.join(getfile, f)):
         return
     cwd = os.getcwd()
@@ -140,6 +147,9 @@ def downunzip(rpmurl, getfile, f):
 
 
 def unmask(mask):
+    """Flags on dependancies in the database are stored as a bitmask.
+    This method returns the symbol specified by the flag.
+    """
     output = ""
     if 2 & mask:
         output += "<"
@@ -150,10 +160,8 @@ def unmask(mask):
     return output
 
 
-app.jinja_env.globals.update(unmask=unmask)
-
-
 def readsize(byte_s):
+    """Convert bytes to a readable format"""
     if byte_s / 1024 == 0:
         return "{0} B".format(byte_s)
     byte_s /= 1024
@@ -162,15 +170,21 @@ def readsize(byte_s):
     return "{0} MB".format(byte_s / 1024)
 
 
+#allow jinja to use these methods
+app.jinja_env.globals.update(unmask=unmask)
 app.jinja_env.globals.update(readsize=readsize)
 
 
-#converts a unix timestamp to a human readable format
 def unix2standard(date):
+    """converts a unix timestamp to a human readable format"""
     return datetime.datetime.fromtimestamp(
                                     int(date)).strftime("%b %d %Y %I:%M %p")
 
 def newestquery(distro, queryfilter, order=None, join=None):
+    """A shortcut for a common SQL query I use. It gets the newest
+    packages of a certain name. Check views.py/index to get an idea
+    of how it's used.
+    """
     if order is None:
         order = Packages[distro].Name
     if join is None:

@@ -2,6 +2,7 @@ import logging
 import os
 
 class MailHandler(logging.Handler):
+    """This handler sends mail to us when there is a 500 error"""
     def __init__(self, sendmail, to, subject):
         logging.Handler.__init__(self)
         self.sendmail = sendmail
@@ -9,9 +10,11 @@ class MailHandler(logging.Handler):
         self.subject = subject
 
     def flush(self):
+        #I'm not sure what this is for
         pass
 
     def emit(self, record):
+    """Actually send the mail"""
         try:
             msg = self.format(record)
             p = os.popen("%s -t" % self.sendmail, 'w')
