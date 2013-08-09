@@ -115,7 +115,11 @@ def package(rpm_id, dist, f=None):
         getfile = os.path.join(app.config['TMP_DIR'], package.build_name + str(time.time()))
         downunzip(rpmurl, getfile, f)
         f = os.path.join(getfile, f)
-        resp = make_response(open(f).read())
+        try:
+            resp = make_response(open(f).read())
+        except IOError:
+            shutil.rmtree(getfile)
+            abort(500)
         mimet, encoding = mimetypes.guess_type(f)
         shutil.rmtree(getfile)
         if mimet is not None:
