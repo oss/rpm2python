@@ -30,7 +30,10 @@ signal.signal(signal.SIGINT, signal_handler)
 if not app.debug:
     import logging
     from mail import MailHandler
-    mail_handler = MailHandler(app.config['SENDMAIL'], app.config['MAIL_TO'], app.config['MAIL_SUBJECT'])
+    mail_handler = MailHandler(
+                        app.config['SENDMAIL'],
+                        app.config['MAIL_TO'],
+                        app.config['MAIL_SUBJECT'])
     mail_handler.setLevel(logging.ERROR)
     app.logger.addHandler(mail_handler)
 

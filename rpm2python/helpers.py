@@ -1,13 +1,23 @@
 from rpm2python import db1, db2, app
-from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires, Cent6Obsoletes, Cent6Conflicts, Cent6Distribution, Cent6ChangeLogs, Cent6SoftwareChangeLogs, Cent6SpecChangeLogs
-from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires, Cent5Obsoletes, Cent5Conflicts, Cent5Distribution, Cent5ChangeLogs, Cent5SoftwareChangeLogs, Cent5SpecChangeLogs
+
+from models import Cent6Packages, Cent6Files, Cent6Provides, Cent6Requires
+from models import Cent6Obsoletes, Cent6Conflicts, Cent6Distribution
+from models import Cent6ChangeLogs, Cent6SoftwareChangeLogs
+from models import Cent6SpecChangeLogs
+
+from models import Cent5Packages, Cent5Files, Cent5Provides, Cent5Requires
+from models import Cent5Obsoletes, Cent5Conflicts, Cent5Distribution
+from models import Cent5ChangeLogs, Cent5SoftwareChangeLogs
+from models import Cent5SpecChangeLogs
+
 from sqlalchemy import func
 import datetime
 import os
 import subprocess
 
 #This set of dictionaries allows easy access to the database
-#because the databases are identical, you can change which database you are querying by changing the key
+#because the databases are identical, you can change which database
+#you are querying by changing the key
 #add more if more databases are added
 distros = ['cent6', 'cent5']
 
@@ -61,16 +71,23 @@ SpecChangeLogs = {
 #
 #name: name shared by the packages
 #archs: the architectures of the packages
-#packages: the actual packages, these are the newest in each repo with this name
+#packages: the actual packages, these are
+#   the newest in each repo with this name
 class PackageName():
     def __init__(self, name, archs, packages):
         self.name = name
         self.packages = packages
         self.archs = archs
         self.repos = {
-                'stable': ['centos5-rutgers', 'centos6-rutgers'],
-                'testing': ['centos5-rutgers-testing', 'centos6-rutgers-testing'],
-                'unstable': ['centos5-rutgers-unstable', 'centos6-rutgers-unstable']}
+                'stable': [
+                    'centos5-rutgers',
+                    'centos6-rutgers'],
+                'testing': [
+                    'centos5-rutgers-testing',
+                    'centos6-rutgers-testing'],
+                'unstable': [
+                    'centos5-rutgers-unstable',
+                    'centos6-rutgers-unstable']}
         fakepack = Cent6Packages()
         fakepack.Version = ""
         fakepack.Rel = ""
@@ -80,6 +97,7 @@ class PackageName():
                 self.newest[repo] = fakepack
         for package in self.packages:
             self.newest[package[1]] = package[0]
+
 
 #puts the given list of packages into a container object called PackageName
 #this stores all packages of the same name together
@@ -104,6 +122,7 @@ def buildpacknames(packages):
         packnames.append(PackageName(name, archname[name], packname[name]))
     return packnames
 
+
 def downunzip(rpmurl, getfile, f):
     if os.path.exists(os.path.join(getfile, f)):
         return
@@ -111,10 +130,14 @@ def downunzip(rpmurl, getfile, f):
     os.makedirs(getfile)
     os.chdir(getfile)
     subprocess.Popen(['/usr/bin/wget', rpmurl]).wait()
-    rpm2cpio = subprocess.Popen(['/usr/bin/rpm2cpio', os.listdir(getfile)[0]], stdout=subprocess.PIPE)
-    subprocess.Popen(['/bin/cpio', '-idmv'], stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
+    rpm2cpio = subprocess.Popen(
+                        ['/usr/bin/rpm2cpio', os.listdir(getfile)[0]],
+                        stdout=subprocess.PIPE)
+    subprocess.Popen(['/bin/cpio', '-idmv'],
+                stdin=rpm2cpio.stdout, stdout=subprocess.PIPE).wait()
     rpm2cpio.stdout.close()
     os.chdir(cwd)
+
 
 def unmask(mask):
     output = ""
@@ -126,7 +149,9 @@ def unmask(mask):
         output += "="
     return output
 
+
 app.jinja_env.globals.update(unmask=unmask)
+
 
 def readsize(byte_s):
     if byte_s / 1024 == 0:
@@ -136,16 +161,44 @@ def readsize(byte_s):
         return "{0} KB".format(byte_s)
     return "{0} MB".format(byte_s / 1024)
 
+
 app.jinja_env.globals.update(readsize=readsize)
+
 
 #converts a unix timestamp to a human readable format
 def unix2standard(date):
-    return datetime.datetime.fromtimestamp(int(date)).strftime("%b %d %Y %I:%M %p")
+    return datetime.datetime.fromtimestamp(
+                                    int(date)).strftime("%b %d %Y %I:%M %p")
 
 def newestquery(distro, queryfilter, order=None, join=None):
     if order is None:
         order = Packages[distro].Name
     if join is None:
-        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo, Packages[distro].Arch).order_by(order).all()
+        return dbs[distro].session.query(
+                                        Packages[distro],
+                                        Distribution[distro].repo,
+                                        func.max(Packages[distro].Date)).\
+                                    join(Distribution[distro]).\
+                                    filter(
+                                        queryfilter,
+                                        Packages[distro].Arch != 'src').\
+                                    group_by(
+                                        Packages[distro].Name,
+                                        Distribution[distro].repo,
+                                        Packages[distro].Arch).\
+                                    order_by(order).all()
     else:
-        return dbs[distro].session.query(Packages[distro], Distribution[distro].repo, func.max(Packages[distro].Date)).join(Distribution[distro]).outerjoin(join).filter(queryfilter, Packages[distro].Arch != 'src').group_by(Packages[distro].Name, Distribution[distro].repo, Packages[distro].Arch).order_by(order).all()
+        return dbs[distro].session.query(
+                                        Packages[distro],
+                                        Distribution[distro].repo,
+                                        func.max(Packages[distro].Date)).\
+                                    join(Distribution[distro]).\
+                                    outerjoin(join).\
+                                    filter(
+                                        queryfilter,
+                                        Packages[distro].Arch != 'src').\
+                                    group_by(
+                                        Packages[distro].Name,
+                                        Distribution[distro].repo,
+                                        Packages[distro].Arch).\
+                                    order_by(order).all()
