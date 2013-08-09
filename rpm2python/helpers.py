@@ -74,7 +74,7 @@ class PackageName():
     name: name shared by the packages
     archs: the architectures of the packages
     packages: the actual packages, these are
-       the newest in each repo with this name
+        the newest in each repo with this name
     """
     def __init__(self, name, archs, packages):
         self.name = name
@@ -104,15 +104,30 @@ class PackageName():
 def buildpacknames(packages):
     """Puts the given list of packages into a
     container object called PackageName this stores all packages
-    of the same name together
+    of the same name together. It also sorts the list while doing
+    this.
+
+    packages is a list of lists of tuples
+    The first tier is the distributions. Each list in the first list
+    will be from a certain ditribution. In each of those lists is
+    a tuple of the form (CentXPackage, repo, date). Only the first
+    one is really needed, but the rest is returned by a SQL query.
+
+    This function is not supposed to make sense.
+
+    TODO: Correct ordering
     """
     packnames = []
     packname = {}
     names = []
     archname = {}
 
-    for cent in packages:
-        for package in cent:
+    iterators = []
+    for distro in packages:
+        iterators.append((iter(distro), None))
+
+    for distro in packages:
+        for package in distro:
             if package[0].Name not in names:
                 names.append(package[0].Name)
                 archname[package[0].Name] = [package[0].Arch]
