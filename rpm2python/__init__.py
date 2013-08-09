@@ -32,7 +32,7 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 if not app.debug:
-    #Send mail when something goes wrong
+    # Send mail when something goes wrong
     import logging
     from mail import MailHandler
     mail_handler = MailHandler(

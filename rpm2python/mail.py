@@ -14,7 +14,7 @@ class MailHandler(logging.Handler):
         pass
 
     def emit(self, record):
-    """Actually send the mail"""
+        """Actually send the mail"""
         try:
             msg = self.format(record)
             p = os.popen("%s -t" % self.sendmail, 'w')

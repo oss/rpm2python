@@ -170,7 +170,7 @@ def readsize(byte_s):
     return "{0} MB".format(byte_s / 1024)
 
 
-#allow jinja to use these methods
+# Allow jinja to use these methods
 app.jinja_env.globals.update(unmask=unmask)
 app.jinja_env.globals.update(readsize=readsize)
 
