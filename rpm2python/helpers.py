@@ -121,13 +121,30 @@ def buildpacknames(packages):
     packname = {}
     names = []
     archname = {}
-
-    iterators = []
+    
+    indexes = []
     for distro in packages:
-        iterators.append((iter(distro), None))
+        indexes.append(0)
 
-    for distro in packages:
-        for package in distro:
+    merged = False
+    ordered = []
+    while not merged:
+        package = (Cent6Packages(), None, None)
+        package[0].Name = '{'
+        num_merged = 0
+        package_distro = 0
+        for distro in xrange(0, len(packages)):
+            index = indexes[distro]
+            if index == len(packages[distro]):
+                num_merged += 1
+            elif packages[distro][index][0].Name < package[0].Name:
+                package = packages[distro][index]
+                package_distro = distro
+            if num_merged == len(packages):
+                merged = True
+        if merged == False:
+            indexes[package_distro] += 1
+            ordered.append(package)
             if package[0].Name not in names:
                 names.append(package[0].Name)
                 archname[package[0].Name] = [package[0].Arch]
@@ -136,7 +153,7 @@ def buildpacknames(packages):
                 archname[package[0].Name].append(package[0].Arch)
             else:
                 packname[package[0].Name].append(package)
-    
+
     for name in names:
         packnames.append(PackageName(name, archname[name], packname[name]))
     return packnames
