@@ -21,6 +21,7 @@ you are querying by changing the key.
 Add more if more databases are added
 '''
 distros = ['cent6', 'cent5']
+repos = ['centos6', 'centos5']
 
 dbs = {
     'cent6': db1,
@@ -81,15 +82,10 @@ class PackageName():
         self.packages = packages
         self.archs = archs
         self.repos = {
-                'stable': [
-                    'centos5-rutgers',
-                    'centos6-rutgers'],
-                'testing': [
-                    'centos5-rutgers-testing',
-                    'centos6-rutgers-testing'],
-                'unstable': [
-                    'centos5-rutgers-unstable',
-                    'centos6-rutgers-unstable']}
+                'stable': ['{0}-rutgers'.format(x) for x in repos],
+                'testing': ['{0}-rutgers-testing'.format(x) for x in repos],
+                'unstable': ['{0}-rutgers-unstable'.format(x) for x in repos],
+                }
         fakepack = Cent6Packages()
         fakepack.Version = ""
         fakepack.Rel = ""
