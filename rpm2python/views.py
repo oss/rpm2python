@@ -14,7 +14,6 @@ from datetime import date, timedelta
 import calendar
 import os
 import mimetypes
-import itertools
 import time
 import shutil
 
@@ -31,7 +30,7 @@ app.url_map.converters['regex'] = RegexConverter
 @app.route('/index', methods = ['GET', 'POST'])
 @app.route('/<regex(r"[a-zA-z]"):letter>', methods = ['GET', 'POST'])
 @app.route(
-    '/search/<regex(r"[\w]+"):searchby>/<regex(r"[-\w/\.%_\(\)]*"):search>',
+    '/search/<regex(r"[\w]+"):searchby>/<regex(r"[-\w/\.%_\(\)\+]*"):search>',
     methods = ['GET', 'POST'])
 def index(letter=None, search=None, searchby=None):
     """View that returns the initial page (index.html)
@@ -265,13 +264,18 @@ def autocomplete():
     """
     results = []
     for distro in distros:
-        results.append(dbs[distro].session.query(
-                                            Packages[distro].Name).\
-                                            group_by(Packages[distro].Name).\
-                                            all())
-    flattened = list(itertools.chain.from_iterable(results[0]))
+        results.extend([result.Name for result in
+                                            Packages[distro].\
+                                                query.\
+                                                group_by(
+                                                    Packages[distro].Name).\
+                                                all()])
+    no_dups = []
+    for name in results:
+        if name not in no_dups:
+            no_dups.append(name)
     ret = {}
-    ret['comp'] = flattened
+    ret['comp'] = no_dups
     return jsonify(ret)
 
 @app.errorhandler(404)
