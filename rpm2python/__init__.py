@@ -20,6 +20,7 @@ app.jinja_env.globals.update(xrange=xrange)
 app.jinja_env.globals.update(chr=chr)
 app.jinja_env.globals.update(izip=itertools.izip)
 app.jinja_env.globals.update(reversed=reversed)
+app.jinja_env.globals.update(len=len)
 
 app.config['TMP_DIR'] = tempfile.mkdtemp(prefix='rpm2python')
 

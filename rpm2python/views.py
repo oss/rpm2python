@@ -8,7 +8,7 @@ from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
-from helpers import distros, dbs
+from helpers import distros
 
 from datetime import date, timedelta
 import calendar
@@ -63,7 +63,7 @@ def index(letter=None, search=None, searchby=None):
                                 distro,
                                 Packages[distro].Date > newerthan,
                                 order=desc(Packages[distro].Date)))
-        breadcrumbscontent = 'Latest'
+        breadcrumbscontent = ['Latest']
 
     # If the user is searching by letter, find packages
     # that start with that letter
@@ -74,7 +74,7 @@ def index(letter=None, search=None, searchby=None):
             packages.append(newestquery(
                                 distro,
                                 Packages[distro].Name.startswith(letter)))
-        breadcrumbscontent = letter
+        breadcrumbscontent = [letter]
 
     # If the user searched, then query the correct part of
     # the database with wildcards around their keyword
@@ -129,7 +129,7 @@ def index(letter=None, search=None, searchby=None):
                 abort(404)
 
 
-        breadcrumbscontent = 'Search'
+        breadcrumbscontent = ['Search']
 
     packnames = buildpacknames(packages)
         
@@ -240,7 +240,7 @@ def package(rpm_id, dist, f=None):
     # kwargs to send to template
     kwargs['rpm_id'] = rpm_id
     kwargs['dist'] = dist
-    kwargs['breadcrumbscontent'] = package.nvr
+    kwargs['breadcrumbscontent'] = [package.nvr[0].upper(), package.nvr]
     kwargs['package'] = package
     kwargs['packnames'] = packnames
     kwargs['form'] = form
