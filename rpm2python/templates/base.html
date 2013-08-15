@@ -7,33 +7,34 @@
         <link href="/static/css/style.css" rel="stylesheet" type="text/css" />
         <link href="/static/css/jquery.autocomplete.css" rel="stylesheet" type="text/css" />
         <link rel="icon" type="image/vnd.microsoft.icon" href="static/img/favicon.ico" />
-        <script type="text/javascript" src="/static/js/jquery-latest.min.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.bgiframe.min.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
-        <link href="/static/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="/static/js/jquery-ui-1.8.4.custom.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.10.3/ui/minified/jquery.ui.core.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.10.3/ui/minified/jquery.ui.widget.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.10.3/ui/minified/jquery.ui.autocomplete.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-ui-1.10.3/ui/minified/jquery.ui.tabs.min.js"></script>
+        <!--<link href="/static/css/jquery-ui-1.8.4.custom.css" rel="stylesheet" type="text/css" />-->
+        <link href="/static/css/jquery-ui-1.10.3/base/jquery.ui.autocomplete.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
 //<![CDATA[
         $(function(){
-
-        // Tabs
-        $('#tabs').tabs();
+            $('#tabs').tabs();
         });
         //]]>
         </script>
         <script type="text/javascript">
 //<![CDATA[
         function doMenu(item) {
-        obj=document.getElementById(item);
-        col=document.getElementById("x" + item);
-        if (obj.style.display=="none") {
-        obj.style.display="block";
-        col.innerHTML="[-]";
-        }
-        else {
-        obj.style.display="none";
-        col.innerHTML="[+]";
-        }
+            obj=document.getElementById(item);
+            col=document.getElementById("x" + item);
+            if (obj.style.display=="none") {
+                obj.style.display="block";
+                col.innerHTML="[-]";
+            }
+            else {
+                obj.style.display="none";
+                col.innerHTML="[+]";
+            }
         }
         //]]>
         </script>
@@ -44,13 +45,19 @@
                 $.ajax({
                     url: '{{ url_for("autocomplete") }}',
                     success: function(data) {
-                        console.log(data);
-                        $('#function_name').autocomplete(data.comp, {
+                        $('#function_name').autocomplete({
+                            source: data.comp,
                             matchContains: true,
                             minChars: 2,
                             selectFirst: false
                         });
                     }
+                });
+                $('#searchby').change(function() {
+                    if ($('#searchby').find(":selected").text() == "Name")
+                        $('#function_name').autocomplete("enable");
+                    else
+                        $('#function_name').autocomplete("disable");
                 });
             });
         </script>
