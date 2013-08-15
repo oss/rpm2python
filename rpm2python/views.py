@@ -174,6 +174,8 @@ def package(rpm_id, dist, f=None):
         abort(404)
 
     package = Packages[distro].query.filter_by(rpm_id=rpm_id).first()
+    if package == None:
+        abort(404)
     packnames = Packages[distro].query.\
                                     filter_by(
                                         Name=package.Name,
@@ -289,5 +291,5 @@ def internal_server_error(e):
     notified when a 500 occurs
     """
     return render_template('500.html',
-        breadcrumbscontent="Error",
+        breadcrumbscontent=["Error"],
         form=SearchForm(request.form)), 500
