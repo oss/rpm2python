@@ -224,7 +224,7 @@
                                         </td>
                                         <td style='padding-top: 2px; padding-bottom: 2px; text-align: right;'>
                                             {% if file.Digest != "" %}
-                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{file.Size}}</a>
+                                            <a href='{{url_for('package', rpm_id=rpm_id, dist=dist, f=file.Path[1:])}}'>{{readsize(file.Size)}}</a>
                                             {% else %}
                                             directory
                                             {% endif %}
@@ -251,7 +251,7 @@
                                             <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Path}}</a>
                                         </td>
                                         <td style='text-align: right;'>
-                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{file.Size}}</a>
+                                            <a href='{{url_for('package', rpm_id=packname.rpm_id, dist=dist, f=file.Path)}}'>{{readsize(file.Size)}}</a>
                                         </td>
                                     </tr>
                                     {% endfor %}
