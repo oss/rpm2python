@@ -4,7 +4,6 @@ from flask import url_for, make_response, request, abort
 from flask.json import jsonify
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
-from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
@@ -62,7 +61,7 @@ def index(letter=None, search=None, searchby=None):
             packages.append(newestquery(
                                 distro,
                                 Packages[distro].Date > newerthan,
-                                order=desc(Packages[distro].Date)))
+                                order=Packages[distro].Name))
         breadcrumbscontent = ['Latest']
 
     # If the user is searching by letter, find packages
