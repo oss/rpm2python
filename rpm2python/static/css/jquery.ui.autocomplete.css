@@ -1,0 +1,25 @@
+/*!
+ * jQuery UI Autocomplete 1.10.3
+ * http://jqueryui.com
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://docs.jquery.com/UI/Autocomplete#theming
+ */
+.ui-autocomplete {
+	position: absolute;
+	top: 0;
+	left: 0;
+	cursor: default;
+    opacity: 0.9;
+    border: 1px solid black;
+    padding: 0;
+    border-radius: 0;
+}
+
+.ui-autocomplete .ui-state-focus {
+    border-radius: 0;
+    background-color: #151515;
+}
