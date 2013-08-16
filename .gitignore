@@ -5,3 +5,4 @@ virtualenv.py
 venv
 rpm2python/getfile/*
 *.swp
+test/node_modules
