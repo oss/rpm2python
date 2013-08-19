@@ -5,4 +5,9 @@ Feature: Autocomplete turns off
     Scenario: Name is selected
         Given I am on the main page
         When I select 'Name'
-        Then autocomplete should be on
+        Then autocomplete should be enabled
+    
+    Scenario: Description is selected
+        Given I am on the main page
+        When I select 'Description'
+        Then autocomplete should be disabled
