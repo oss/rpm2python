@@ -18,17 +18,17 @@
                 <td>{{ packname.packages[0][0].Summary }}</td>
                 <td class='rutgers'><strong>
                 {% for repo in packname.repos['stable'] if packname.newest[repo].Version != "" %}
-                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a><br>
                 {% endfor %}
                 </strong></td>
                 <td class='rutgers-testing'><strong>
                 {% for repo in packname.repos['testing'] if packname.newest[repo].Version != "" %}
-                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a><br>
                 {% endfor %}
                 </strong></td>
                 <td class='rutgers-unstable'><strong>
                 {% for repo in packname.repos['unstable'] if packname.newest[repo].Version != "" %}
-                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a></br>
+                <a href="{{url_for('package', rpm_id=packname.newest[repo].rpm_id, dist=repo)}}">{{ packname.newest[repo].Version }}-{{ packname.newest[repo].Rel }}</a><br>
                 {% endfor %}
                 </strong></td>
                 <td>

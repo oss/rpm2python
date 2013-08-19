@@ -97,7 +97,15 @@ class PackageName():
             self.newest[package[1]] = package[0]
 
 
-def buildpacknames(packages):
+def alpha_ordering(package1, package2):
+    return True if package1.Name < package2.Name else False
+
+
+def date_ordering(package1, package2):
+    return False if package1.Date < package2.Date else True
+
+
+def buildpacknames(packages, ordering):
     """Puts the given list of packages into a
     container object called PackageName this stores all packages
     of the same name together. It also sorts the list while doing
@@ -133,7 +141,7 @@ def buildpacknames(packages):
             index = indexes[distro]
             if index == len(packages[distro]):
                 num_merged += 1
-            elif packages[distro][index][0].Name < package[0].Name:
+            elif ordering(packages[distro][index][0], package[0]):
                 package = packages[distro][index]
                 package_distro = distro
             if num_merged == len(packages):

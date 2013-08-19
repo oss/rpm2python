@@ -4,7 +4,7 @@
 <div id="function_description">
     <div id='packageHeader'>
         <h3>
-            {{package.Name}} {{package.Version}}-{{package.Rel}}<br />
+            {{package.Name}} {{package.Version}}-{{package.Rel}}<br>
         </h3>
         <table style='width: 100%; padding: 0; margin: 0; border: 0; font-size: 13px; color: #505050;'>
             <tr>
@@ -344,18 +344,18 @@
                                         <td>
                                             {% for specchangelog, spec in izip(packagespecchangelogs, specchangelogs) %}
                                             {% if loop.index < 5 %}
-                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br>
                                             {% for line in spec %}
-                                            {{line}}<br/>
+                                            {{line}}<br>
                                             {% endfor %}
                                             {% endif %}
                                             {% endfor %}
                                             <div style='display: none' id='clog'>
                                             {% for specchangelog, spec in izip(packagespecchangelogs, specchangelogs) %}
                                             {% if loop.index >= 5 %}
-                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br/>
+                                            * {{unix2standard(specchangelog.Date)}} {{specchangelog.Author}} <br>
                                             {% for line in spec %}
-                                            {{line}}<br/>
+                                            {{line}}<br>
                                             {% endfor %}
                                             {% endif %}
                                             {% endfor %}
@@ -373,11 +373,11 @@
                                     <tr>
                                         <td>
                                         {% for line in softwarechangelog[0] %}
-                                        {{line}}<br/>
+                                        {{line}}<br>
                                         {% endfor %}
                                             <div style='display: none' id='swclog'>
                                             {% for line in softwarechangelog[1].split('\n') %}
-                                            {{line}}<br/>
+                                            {{line}}<br>
                                             {% endfor %}
                                             </div>
                                         </td>

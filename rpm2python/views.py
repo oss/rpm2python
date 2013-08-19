@@ -4,10 +4,11 @@ from flask import url_for, make_response, request, abort
 from flask.json import jsonify
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
+from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
 from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
-from helpers import distros
+from helpers import distros, alpha_ordering, date_ordering
 
 from datetime import date, timedelta
 import calendar
@@ -50,6 +51,7 @@ def index(letter=None, search=None, searchby=None):
                             searchby=form.searchby.data))
     
     packages = []
+    ordering = alpha_ordering
 
     # If the user came to the '/' url, give them all packages
     # made in the past 2 weeks
@@ -61,8 +63,9 @@ def index(letter=None, search=None, searchby=None):
             packages.append(newestquery(
                                 distro,
                                 Packages[distro].Date > newerthan,
-                                order=Packages[distro].Name))
+                                order=desc(Packages[distro].Date)))
         breadcrumbscontent = ['Latest']
+        ordering = date_ordering
 
     # If the user is searching by letter, find packages
     # that start with that letter
@@ -130,7 +133,7 @@ def index(letter=None, search=None, searchby=None):
 
         breadcrumbscontent = ['Search']
 
-    packnames = buildpacknames(packages)
+    packnames = buildpacknames(packages, ordering)
         
     return render_template('index.html',
         packnames = packnames,
