@@ -1,14 +1,6 @@
 var LettersWrapper = function() {
     this.World = require("../support/world.js").World;
 
-    this.Given(/^I am on the (.*) page$/,
-        function(page, callback) {
-            if (page == 'main')
-                page_url = 'index';
-            this.browser.visit("http://127.0.0.1:5000/" + page_url, callback);
-        }
-    );
-
     this.When(/^I click on "([^"]*)"$/,
         function(letter, callback) {
             this.browser.visit("http://127.0.0.1:5000/" + letter, callback);
