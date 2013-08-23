@@ -230,11 +230,14 @@ def package(rpm_id, dist, f=None):
     kwargs = {}
 
     # Format the software and spec changelogs so they can be expanded
-    softwarechangelog = ""
     if package.softwarechangelogs is not None:
         softchangelogsplit = package.softwarechangelogs.Text.split('\n', 5)
-        softwarechangelog = [softchangelogsplit[:4], softchangelogsplit[5]]
-        kwargs['softwarechangelog'] = softwarechangelog
+        if len(softchangelogsplit) < 5:
+            kwargs['softwarechangelog'] = [softchangelogsplit, '']
+        else:
+            kwargs['softwarechangelog'] = [
+                                        softchangelogsplit[:4],
+                                        softchangelogsplit[5]]
     specchangelogs = []
     packagespecchangelogs = []
     for specchangelog in package.specchangelogs:
