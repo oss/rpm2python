@@ -10,7 +10,8 @@ from models import Cent5Obsoletes, Cent5Conflicts, Cent5Distribution
 from models import Cent5ChangeLogs, Cent5SoftwareChangeLogs
 from models import Cent5SpecChangeLogs
 
-from sqlalchemy import func
+from sqlalchemy import func, not_, and_
+from sqlalchemy.orm import aliased
 import datetime
 import os
 import subprocess
@@ -223,32 +224,57 @@ def newestquery(distro, queryfilter, order=None, join=None):
     """
     if order is None:
         order = Packages[distro].Name
+    p1 = aliased(Packages[distro])
+    d1 = aliased(Distribution[distro])
+    sq = dbs[distro].session.\
+                        query(
+                            Packages[distro].Name,
+                            Packages[distro].Arch,
+                            Distribution[distro].repo,
+                            func.max(Packages[distro].Date).\
+                                                        label('Date')).\
+                        select_from(
+                            Packages[distro]).\
+                        join(
+                            Distribution[distro]).\
+                        filter(
+                            queryfilter).\
+                        filter(
+                            not_(Distribution[distro].repo.\
+                                                    like('%staging'))).\
+                        group_by(
+                            Packages[distro].Name,
+                            Packages[distro].Arch,
+                            Distribution[distro].repo).subquery()
     if join is None:
-        return dbs[distro].session.query(
-                                        Packages[distro],
-                                        Distribution[distro].repo,
-                                        func.max(Packages[distro].Date)).\
-                                    join(Distribution[distro]).\
-                                    filter(
-                                        queryfilter,
-                                        Packages[distro].Arch != 'src').\
-                                    group_by(
-                                        Packages[distro].Name,
-                                        Distribution[distro].repo,
-                                        Packages[distro].Arch).\
-                                    order_by(order).all()
+        return dbs[distro].session.\
+                                query(
+                                    p1, d1.repo).\
+                                select_from(
+                                    p1).\
+                                join(
+                                    d1).\
+                                join(
+                                    sq,
+                                    and_(sq.c.Name==p1.Name,
+                                    sq.c.Arch==p1.Arch,
+                                    sq.c.repo==d1.repo,
+                                    sq.c.Date==p1.Date)).\
+                                order_by(p1.nvr).all()
     else:
-        return dbs[distro].session.query(
-                                        Packages[distro],
-                                        Distribution[distro].repo,
-                                        func.max(Packages[distro].Date)).\
-                                    join(Distribution[distro]).\
-                                    outerjoin(join).\
-                                    filter(
-                                        queryfilter,
-                                        Packages[distro].Arch != 'src').\
-                                    group_by(
-                                        Packages[distro].Name,
-                                        Distribution[distro].repo,
-                                        Packages[distro].Arch).\
-                                    order_by(order).all()
+        return dbs[distro].session.\
+                                    query(
+                                        p1, d1.repo).\
+                                    select_from(
+                                        p1).\
+                                    join(
+                                        d1).\
+                                    outerjoin(
+                                        join).\
+                                    join(
+                                        sq,
+                                        and_(sq.c.Name==p1.Name,
+                                        sq.c.Arch==p1.Arch,
+                                        sq.c.repo==d1.repo,
+                                        sq.c.Date==p1.Date)).\
+                                    order_by(p1.nvr).all()
