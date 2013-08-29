@@ -250,8 +250,6 @@ def newestquery(distro, queryfilter, order=None, join=None):
         return dbs[distro].session.\
                                 query(
                                     p1, d1.repo).\
-                                select_from(
-                                    p1).\
                                 join(
                                     d1).\
                                 join(
@@ -260,13 +258,11 @@ def newestquery(distro, queryfilter, order=None, join=None):
                                     sq.c.Arch==p1.Arch,
                                     sq.c.repo==d1.repo,
                                     sq.c.Date==p1.Date)).\
-                                order_by(p1.nvr).all()
+                                order_by(p1.nvr, p1.Arch).all()
     else:
         return dbs[distro].session.\
                                     query(
                                         p1, d1.repo).\
-                                    select_from(
-                                        p1).\
                                     join(
                                         d1).\
                                     outerjoin(
