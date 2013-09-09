@@ -226,51 +226,59 @@ def newestquery(distro, queryfilter, order=None, join=None):
         order = Packages[distro].Name
     p1 = aliased(Packages[distro])
     d1 = aliased(Distribution[distro])
-    sq = dbs[distro].session.\
-                        query(
-                            Packages[distro].Name,
-                            Packages[distro].Arch,
-                            Distribution[distro].repo,
-                            func.max(Packages[distro].Date).\
-                                                        label('Date')).\
-                        select_from(
-                            Packages[distro]).\
-                        join(
-                            Distribution[distro]).\
-                        filter(
-                            queryfilter).\
-                        filter(
-                            not_(Distribution[distro].repo.\
-                                                    like('%staging'))).\
-                        group_by(
-                            Packages[distro].Name,
-                            Packages[distro].Arch,
-                            Distribution[distro].repo).subquery()
     if join is None:
-        return dbs[distro].session.\
-                                query(
-                                    p1, d1.repo).\
-                                join(
-                                    d1).\
-                                join(
-                                    sq,
-                                    and_(sq.c.Name==p1.Name,
-                                    sq.c.Arch==p1.Arch,
-                                    sq.c.repo==d1.repo,
-                                    sq.c.Date==p1.Date)).\
-                                order_by(p1.nvr, p1.Arch).all()
+        sq = dbs[distro].session.\
+                            query(
+                                Packages[distro].Name,
+                                Packages[distro].Arch,
+                                Distribution[distro].repo,
+                                func.max(Packages[distro].Date).\
+                                                            label('Date')).\
+                            select_from(
+                                Packages[distro]).\
+                            join(
+                                Distribution[distro]).\
+                            filter(
+                                queryfilter).\
+                            filter(
+                                not_(Distribution[distro].repo.\
+                                                        like('%staging'))).\
+                            group_by(
+                                Packages[distro].Name,
+                                Packages[distro].Arch,
+                                Distribution[distro].repo).subquery()
     else:
-        return dbs[distro].session.\
-                                    query(
-                                        p1, d1.repo).\
-                                    join(
-                                        d1).\
-                                    outerjoin(
-                                        join).\
-                                    join(
-                                        sq,
-                                        and_(sq.c.Name==p1.Name,
-                                        sq.c.Arch==p1.Arch,
-                                        sq.c.repo==d1.repo,
-                                        sq.c.Date==p1.Date)).\
-                                    order_by(p1.nvr).all()
+        sq = dbs[distro].session.\
+                            query(
+                                Packages[distro].Name,
+                                Packages[distro].Arch,
+                                Distribution[distro].repo,
+                                func.max(Packages[distro].Date).\
+                                                            label('Date')).\
+                            select_from(
+                                Packages[distro]).\
+                            join(
+                                Distribution[distro]).\
+                            join(
+                                join).\
+                            filter(
+                                queryfilter).\
+                            filter(
+                                not_(Distribution[distro].repo.\
+                                                        like('%staging'))).\
+                            group_by(
+                                Packages[distro].Name,
+                                Packages[distro].Arch,
+                                Distribution[distro].repo).subquery()
+    return dbs[distro].session.\
+                            query(
+                                p1, d1.repo).\
+                            join(
+                                d1).\
+                            join(
+                                sq,
+                                and_(sq.c.Name==p1.Name,
+                                sq.c.Arch==p1.Arch,
+                                sq.c.repo==d1.repo,
+                                sq.c.Date==p1.Date)).\
+                            order_by(p1.nvr, p1.Arch).all()
