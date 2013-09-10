@@ -119,6 +119,9 @@ def buildpacknames(packages, ordering):
     one is really needed, but the rest is returned by a SQL query.
 
     This function is not supposed to make sense.
+    
+    IF ALL ENTRIES WERE IN ONE DATABASE THIS WOULDN'T BE NECCESSARY
+    CONSIDER MAKING THE DATABASE BETTER BEFORE MESSING WITH THIS
 
     TODO: Correct ordering
     """
