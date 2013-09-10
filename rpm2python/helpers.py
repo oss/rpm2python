@@ -122,8 +122,6 @@ def buildpacknames(packages, ordering):
     
     IF ALL ENTRIES WERE IN ONE DATABASE THIS WOULDN'T BE NECCESSARY
     CONSIDER MAKING THE DATABASE BETTER BEFORE MESSING WITH THIS
-
-    TODO: Correct ordering
     """
     packnames = []
     packname = {}
