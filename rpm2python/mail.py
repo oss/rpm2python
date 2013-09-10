@@ -10,7 +10,7 @@ class MailHandler(logging.Handler):
         self.subject = subject
 
     def flush(self):
-        #I'm not sure what this is for
+        # I'm not sure what this is for
         pass
 
     def emit(self, record):
