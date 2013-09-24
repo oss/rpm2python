@@ -7,7 +7,7 @@ from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
-from helpers import Conflicts, Files, Obsoletes, Packages, Provides, Requires
+from models import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from helpers import distros, alpha_ordering, date_ordering
 
 from datetime import date, timedelta
@@ -59,11 +59,9 @@ def index(letter=None, search=None, searchby=None):
         newerthan = int(calendar.timegm(
                                 (date.today() - timedelta(days=14)).\
                                     timetuple()))
-        for distro in distros:
-            packages.append(newestquery(
-                                distro,
-                                Packages[distro].Date > newerthan,
-                                order=desc(Packages[distro].Date)))
+        packages.append(newestquery(
+                                Packages.Date > newerthan,
+                                order=desc(Packages.Date)))
         breadcrumbscontent = ['Latest']
         ordering = date_ordering
 
@@ -72,64 +70,51 @@ def index(letter=None, search=None, searchby=None):
     elif search is None and searchby is None:
         if len(letter) != 1:
             return redirect(url_for('index'))
-        for distro in distros:
-            packages.append(newestquery(
-                                distro,
-                                Packages[distro].Name.startswith(letter)))
+        packages.append(newestquery(Packages.Name.startswith(letter)))
         breadcrumbscontent = [letter]
 
     # If the user searched, then query the correct part of
     # the database with wildcards around their keyword
     else:
-        for distro in distros:
-            if searchby == 'name':
-                packages.append(newestquery(
-                                    distro,
-                                    Packages[distro].Name.\
-                                        like("%" + search + "%")))
-            elif searchby == 'file':
-                packages.append(newestquery(
-                                    distro,
-                                    Files[distro].Path.\
-                                        like("%" + search + "%"),
-                                    join=Files[distro]))
-            elif searchby == 'provides':
-                packages.append(newestquery(
-                                    distro,
-                                    Provides[distro].Resource.\
-                                        like("%" + search + "%"),
-                                    join=Provides[distro]))
-            elif searchby == 'requires':
-                packages.append(newestquery(
-                                    distro,
-                                    Requires[distro].Resource.\
-                                        like("%" + search + "%"),
-                                    join=Requires[distro]))
-            elif searchby == 'description':
-                packages.append(newestquery(
-                                    distro,
-                                    Packages[distro].Description.\
-                                        like("%" + search + "%")))
-            elif searchby == 'summary':
-                packages.append(newestquery(
-                                    distro,
-                                    Packages[distro].Summary.\
-                                        like("%" + search + "%")))
-            elif searchby == 'obsoletes':
-                packages.append(newestquery(
-                                    distro,
-                                    Obsoletes[distro].Resource.\
-                                        like("%" + search + "%"),
-                                    join=Obsoletes[distro]))
-            elif searchby == 'conflicts':
-                packages.append(newestquery(
-                                    distro,
-                                    Conflicts[distro].Resource.\
-                                        like("%" + search + "%"),
-                                    join=Conflicts[distro]))
-            else:
-                abort(404)
-
+        if searchby == 'name':
+            packages.append(newestquery(
+                                Packages.Name.\
+                                    like("%" + search + "%")))
+        elif searchby == 'file':
+            packages.append(newestquery(
+                                Files.Path.\
+                                    like("%" + search + "%"),
+                                join=Files))
+        elif searchby == 'provides':
+            packages.append(newestquery(
+                                Provides.Resource.\
+                                    like("%" + search + "%"),
+                                join=Provides))
+        elif searchby == 'requires':
+            packages.append(newestquery(
+                                Requires.Resource.\
+                                    like("%" + search + "%"),
+                                join=Requires))
+        elif searchby == 'description':
+            packages.append(newestquery(
+                                Packages.Description.\
+                                    like("%" + search + "%")))
+        elif searchby == 'summary':
+            packages.append(newestquery(
+                                Packages.Summary.\
+                                    like("%" + search + "%")))
+        elif searchby == 'obsoletes':
+            packages.append(newestquery(
+                                Obsoletes.Resource.\
+                                    like("%" + search + "%"),
+                                join=Obsoletes))
+        elif searchby == 'conflicts':
+            packages.append(newestquery(
+                                Conflicts.Resource.\
+                                    like("%" + search + "%"),
+                                join=Conflicts))
+        else:
+            abort(404)
 
         breadcrumbscontent = ['Search']
 
@@ -175,22 +160,24 @@ def package(rpm_id, dist, f=None):
     else:
         abort(404)
 
-    package = Packages[distro].query.filter_by(rpm_id=rpm_id).first()
+    package = Packages.query.\
+                        filter_by(rpm_id=rpm_id).\
+                        filter_by(distro in Packages.distributions).first()
     if package == None:
         abort(404)
-    packnames = Packages[distro].query.\
-                                    filter_by(
-                                        Name=package.Name,
-                                        Version=package.Version).\
-                                    order_by(Packages[distro].Arch).all()
+    packnames = Packages.query.\
+                            filter_by(
+                                Name=package.Name,
+                                Version=package.Version).\
+                            order_by(Packages.Arch).all()
     # Make sure to get the correct src rpm if the build_name is
     # different from the actual package name
     if package.Name != package.build_name:
-        packnames.append(Packages[distro].query.\
-                                            filter_by(
-                                                Name=package.build_name,
-                                                Version=package.Version,
-                                                Arch='src').first())
+        packnames.append(Packages.query.
+                                    filter_by(
+                                        Name=package.build_name,
+                                        Version=package.Version,
+                                        Arch='src').first())
 
     # If the user is trying to download a file, download
     # the package from koji and exrtract it with rpm2cpio
@@ -272,10 +259,10 @@ def autocomplete():
     results = []
     for distro in distros:
         results.extend([result.Name for result in
-                                            Packages[distro].\
+                                            Packages.\
                                                 query.\
                                                 group_by(
-                                                    Packages[distro].Name).\
+                                                    Packages.Name).\
                                                 all()])
     no_dups = []
     for name in results:
