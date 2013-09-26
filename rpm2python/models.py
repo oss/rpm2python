@@ -18,8 +18,6 @@ from rpm2python import db
 
 
 class ChangeLogs(db.Model):
-    __tablename__ = 'ChangeLogs'
-    __bind_key__ = 'cent6'
     ID = db.Column(db.Integer, primary_key=True,
                     nullable=False, autoincrement=True)
     build_id = db.Column(db.Integer)
@@ -30,8 +28,6 @@ class ChangeLogs(db.Model):
 
 
 class Conflicts(db.Model):
-    __tablename__ = 'Conflicts'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -42,8 +38,6 @@ class Conflicts(db.Model):
 
 
 class Distribution(db.Model):
-    __tablename__ = 'Distribution'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -52,8 +46,6 @@ class Distribution(db.Model):
 
 
 class Files(db.Model):
-    __tablename__ = 'Files'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -65,8 +57,6 @@ class Files(db.Model):
 
 
 class Obsoletes(db.Model):
-    __tablename__ = 'Obsoletes'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -77,8 +67,6 @@ class Obsoletes(db.Model):
 
 
 class Packages(db.Model):
-    __tablename__ = 'Packages'
-    __bind_key__ = 'cent6'
     package_id = db.Column(db.Integer, nullable=False)
     build_id = db.Column(db.Integer, nullable=False)
     rpm_id = db.Column(db.Integer,
@@ -131,8 +119,6 @@ class Packages(db.Model):
                                     lazy='dynamic')
 
 class Provides(db.Model):
-    __tablename__ = 'Provides'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -143,8 +129,6 @@ class Provides(db.Model):
 
 
 class Requires(db.Model):
-    __tablename__ = 'Requires'
-    __bind_key__ = 'cent6'
     rpm_id = db.Column(db.Integer,
                         db.ForeignKey('Packages.rpm_id'),
                         nullable=False, primary_key=True, default=0)
@@ -155,8 +139,6 @@ class Requires(db.Model):
 
 
 class SoftwareChangeLogs(db.Model):
-    __tablename__ = 'SoftwareChangeLogs'
-    __bind_key__ = 'cent6'
     build_id = db.Column(db.Integer,
                             db.ForeignKey('Packages.build_id'),
                             nullable=False, primary_key=True, default=0)
@@ -165,8 +147,6 @@ class SoftwareChangeLogs(db.Model):
 
 
 class SpecChangeLogs(db.Model):
-    __tablename__ = 'SpecChangeLogs'
-    __bind_key__ = 'cent6'
     ID = db.Column(db.Integer,
                     nullable=False, primary_key=True, autoincrement=True)
     build_id = db.Column(db.Integer)

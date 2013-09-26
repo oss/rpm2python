@@ -153,7 +153,7 @@ def newestquery(queryfilter, order=None, join=None):
                         Packages.Arch,
                         Distribution.repo,
                         func.max(Packages.Date).\
-                                                    label('Date')).\
+                                            label('Date')).\
                     select_from(
                         Packages).\
                     join(
@@ -162,7 +162,7 @@ def newestquery(queryfilter, order=None, join=None):
                         queryfilter).\
                     filter(
                         not_(Distribution.repo.\
-                                                like('%staging'))).\
+                                            like('%staging'))).\
                     group_by(
                         Packages.Name,
                         Packages.Arch,
@@ -174,7 +174,7 @@ def newestquery(queryfilter, order=None, join=None):
                         Packages.Arch,
                         Distribution.repo,
                         func.max(Packages.Date).\
-                                                    label('Date')).\
+                                            label('Date')).\
                     select_from(
                         Packages).\
                     join(
@@ -185,7 +185,7 @@ def newestquery(queryfilter, order=None, join=None):
                         queryfilter).\
                     filter(
                         not_(Distribution.repo.\
-                                                like('%staging'))).\
+                                            like('%staging'))).\
                     group_by(
                         Packages.Name,
                         Packages.Arch,

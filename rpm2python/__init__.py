@@ -10,8 +10,7 @@ import shutil
 app = Flask(__name__)
 app.config.from_pyfile('/etc/rpm2python.cfg')
 
-db1 = SQLAlchemy(app)
-db2 = SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
