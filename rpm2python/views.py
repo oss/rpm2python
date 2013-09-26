@@ -7,8 +7,8 @@ from werkzeug.routing import BaseConverter
 from sqlalchemy import desc
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
+from helpers import alpha_ordering, date_ordering
 from models import Conflicts, Files, Obsoletes, Packages, Provides, Requires
-from helpers import distros, alpha_ordering, date_ordering
 
 from datetime import date, timedelta
 import calendar
@@ -256,14 +256,12 @@ def autocomplete():
     """Does a query for all packages in the database and
     puts them into a list that is then flattened and returned as json
     """
-    results = []
-    for distro in distros:
-        results.extend([result.Name for result in
-                                            Packages.\
-                                                query.\
-                                                group_by(
-                                                    Packages.Name).\
-                                                all()])
+    results = ([result.Name for result in
+                                        Packages.\
+                                            query.\
+                                            group_by(
+                                                Packages.Name).\
+                                            all()])
     no_dups = []
     for name in results:
         if name not in no_dups:
