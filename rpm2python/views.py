@@ -59,9 +59,9 @@ def index(letter=None, search=None, searchby=None):
         newerthan = int(calendar.timegm(
                                 (date.today() - timedelta(days=14)).\
                                     timetuple()))
-        packages.append(newestquery(
-                                Packages.Date > newerthan,
-                                order=desc(Packages.Date)))
+        packages = newestquery(
+                            Packages.Date > newerthan,
+                            order=desc(Packages.Date))
         breadcrumbscontent = ['Latest']
         ordering = date_ordering
 
@@ -70,49 +70,49 @@ def index(letter=None, search=None, searchby=None):
     elif search is None and searchby is None:
         if len(letter) != 1:
             return redirect(url_for('index'))
-        packages.append(newestquery(Packages.Name.startswith(letter)))
+        packages = newestquery(Packages.Name.startswith(letter))
         breadcrumbscontent = [letter]
 
     # If the user searched, then query the correct part of
     # the database with wildcards around their keyword
     else:
         if searchby == 'name':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Packages.Name.\
-                                    like("%" + search + "%")))
+                                    like("%" + search + "%"))
         elif searchby == 'file':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Files.Path.\
                                     like("%" + search + "%"),
-                                join=Files))
+                                join=Files)
         elif searchby == 'provides':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Provides.Resource.\
                                     like("%" + search + "%"),
-                                join=Provides))
+                                join=Provides)
         elif searchby == 'requires':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Requires.Resource.\
                                     like("%" + search + "%"),
-                                join=Requires))
+                                join=Requires)
         elif searchby == 'description':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Packages.Description.\
-                                    like("%" + search + "%")))
+                                    like("%" + search + "%"))
         elif searchby == 'summary':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Packages.Summary.\
-                                    like("%" + search + "%")))
+                                    like("%" + search + "%"))
         elif searchby == 'obsoletes':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Obsoletes.Resource.\
                                     like("%" + search + "%"),
-                                join=Obsoletes))
+                                join=Obsoletes)
         elif searchby == 'conflicts':
-            packages.append(newestquery(
+            packages = newestquery(
                                 Conflicts.Resource.\
                                     like("%" + search + "%"),
-                                join=Conflicts))
+                                join=Conflicts)
         else:
             abort(404)
 
