@@ -8,6 +8,7 @@ import os
 import subprocess
 
 repos = ['centos5', 'centos6']
+reponames = ['rutgers', 'rutgers-testing', 'rutgers-unstable', 'rutgers-staging']
 
 class PackageName():
     """PackageName is used in the index template for ordering purposes

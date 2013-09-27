@@ -4,11 +4,12 @@ from flask import url_for, make_response, request, abort
 from flask.json import jsonify
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
-from helpers import alpha_ordering, date_ordering
+from helpers import alpha_ordering, date_ordering, repos, reponames
 from models import Conflicts, Files, Obsoletes, Packages, Provides, Requires
+from models import Distribution
 
 from datetime import date, timedelta
 import calendar
@@ -153,16 +154,21 @@ def package(rpm_id, dist, f=None):
     # Find out the distribution the package is in,
     # find the package by rpm_id, and then
     # get all the other packages with the same name
-    if 'centos6' in dist:
-        distro = 'cent6'
-    elif 'centos5' in dist:
-        distro = 'cent5'
-    else:
+    distro = []
+    for repo in repos:
+        if repo in dist:
+            distro = [repo + '-' + x for x in reponames]
+            break
+    if distro == []:
         abort(404)
 
     package = Packages.query.\
                         filter_by(rpm_id=rpm_id).\
-                        filter_by(distro in Packages.distributions).first()
+                        filter(
+                            or_(Distribution.repo == distro[0],
+                            Distribution.repo == distro[1],
+                            Distribution.repo == distro[2],
+                            Distribution.repo == distro[3])).first()
     if package == None:
         abort(404)
     packnames = Packages.query.\
