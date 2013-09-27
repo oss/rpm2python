@@ -8,7 +8,9 @@ import os
 import subprocess
 
 repos = ['centos5', 'centos6']
-reponames = ['rutgers', 'rutgers-testing', 'rutgers-unstable', 'rutgers-staging']
+reponames = [
+        'rutgers', 'rutgers-testing',
+        'rutgers-unstable', 'rutgers-staging']
 
 class PackageName():
     """PackageName is used in the index template for ordering purposes
@@ -51,19 +53,9 @@ def date_ordering(package1, package2):
 def buildpacknames(packages, ordering):
     """Puts the given list of packages into a
     container object called PackageName this stores all packages
-    of the same name together. It also sorts the list while doing
-    this.
+    of the same name together. The list should be sorted.
 
-    packages is a list of lists of tuples
-    The first tier is the distributions. Each list in the first list
-    will be from a certain ditribution. In each of those lists is
-    a tuple of the form (CentXPackage, repo, date). Only the first
-    one is really needed, but the rest is returned by a SQL query.
-
-    This function is not supposed to make sense.
-    
-    IF ALL ENTRIES WERE IN ONE DATABASE THIS WOULDN'T BE NECCESSARY
-    CONSIDER MAKING THE DATABASE BETTER BEFORE MESSING WITH THIS
+    packages is a list of tuples of the form (Packages, repo)
     """
     packnames = []
     packname = {}
