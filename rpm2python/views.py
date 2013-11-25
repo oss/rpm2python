@@ -185,6 +185,13 @@ def package(rpm_id, dist, f=None):
                                         Version=package.Version,
                                         Arch='src').first())
 
+    # Remove packnames from the wrong repo
+    real_packnames = []
+    for packname in packnames:
+        for distribution in packname.distributions:
+            if repo in distribution.repo:
+                real_packnames.append(packname)
+
     # If the user is trying to download a file, download
     # the package from koji and exrtract it with rpm2cpio
     # then give the user the file
@@ -242,7 +249,7 @@ def package(rpm_id, dist, f=None):
     kwargs['dist'] = dist
     kwargs['breadcrumbscontent'] = [package.nvr[0].upper(), package.nvr]
     kwargs['package'] = package
-    kwargs['packnames'] = packnames
+    kwargs['packnames'] = real_packnames
     kwargs['form'] = form
     kwargs['srcurl'] = 'http://koji.rutgers.edu/packages/' + \
                             '/'.join([
