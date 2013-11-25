@@ -186,6 +186,7 @@ def package(rpm_id, dist, f=None):
                                         Arch='src').first())
 
     # Remove packnames from the wrong repo
+    # TODO: Add this into the query (it will look nicer)
     real_packnames = []
     for packname in packnames:
         for distribution in packname.distributions:
