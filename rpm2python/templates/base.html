@@ -43,6 +43,17 @@
             text field is upated -->
         <script type="text/javascript">
             $(function() {
+                //change prototype to highlight search
+                //this is a hack
+                $.ui.autocomplete.prototype._renderItem = function( ul, item){
+                    var term = this.term.split(' ').join('|');
+                    var re = new RegExp("(" + term + ")", "gi") ;
+                    var t = item.label.replace(re,"<strong>$1</strong>");
+                    return $( "<li></li>" )
+                        .data( "item.autocomplete", item )
+                        .append( "<a>" + t + "</a>" )
+                        .appendTo( ul );
+                };
                 $.ajax({
                     url: '{{ url_for("autocomplete") }}',
                     success: function(data) {
