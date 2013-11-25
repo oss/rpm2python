@@ -13,10 +13,12 @@
 	top: 0;
 	left: 0;
 	cursor: default;
-    opacity: 0.9;
-    border: 1px solid black;
-    padding: 0;
-    border-radius: 0;
+  opacity: 0.9;
+  border: 1px solid black;
+  padding: 0;
+  border-radius: 0;
+  max-height: 200px;
+  overflow: auto;
 }
 
 .ui-autocomplete .ui-state-focus {
