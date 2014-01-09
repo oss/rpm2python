@@ -8,7 +8,7 @@ import sys
 import shutil
 
 app = Flask(__name__)
-app.config.from_pyfile('/etc/rpm2python.cfg')
+app.config.from_pyfile('../rpm2python.cfg')
 
 db = SQLAlchemy(app)
 
