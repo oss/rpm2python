@@ -4,10 +4,10 @@ from flask import url_for, make_response, request, abort
 from flask.json import jsonify
 from forms import SearchForm
 from werkzeug.routing import BaseConverter
-from sqlalchemy import desc, or_
+from sqlalchemy import or_
 
 from helpers import newestquery, buildpacknames, unix2standard, downunzip
-from helpers import alpha_ordering, date_ordering, repos, reponames
+from helpers import repos, reponames
 from models import Conflicts, Files, Obsoletes, Packages, Provides, Requires
 from models import Distribution
 
@@ -52,7 +52,6 @@ def index(letter=None, search=None, searchby=None):
                             searchby=form.searchby.data))
     
     packages = []
-    ordering = alpha_ordering
 
     # If the user came to the '/' url, give them all packages
     # made in the past 2 weeks
@@ -62,9 +61,8 @@ def index(letter=None, search=None, searchby=None):
                                     timetuple()))
         packages = newestquery(
                             Packages.Date > newerthan,
-                            order=desc(Packages.Date))
+                            order="d")
         breadcrumbscontent = ['Latest']
-        ordering = date_ordering
 
     # If the user is searching by letter, find packages
     # that start with that letter
@@ -80,46 +78,54 @@ def index(letter=None, search=None, searchby=None):
         if searchby == 'name':
             packages = newestquery(
                                 Packages.Name.\
-                                    like("%" + search + "%"))
+                                    like("%" + search + "%"),
+                                order="n")
         elif searchby == 'file':
             packages = newestquery(
                                 Files.Path.\
                                     like("%" + search + "%"),
+                                order="n",
                                 join=Files)
         elif searchby == 'provides':
             packages = newestquery(
                                 Provides.Resource.\
                                     like("%" + search + "%"),
+                                order="n",
                                 join=Provides)
         elif searchby == 'requires':
             packages = newestquery(
                                 Requires.Resource.\
                                     like("%" + search + "%"),
+                                order="n",
                                 join=Requires)
         elif searchby == 'description':
             packages = newestquery(
                                 Packages.Description.\
-                                    like("%" + search + "%"))
+                                    like("%" + search + "%"),
+                                order="n")
         elif searchby == 'summary':
             packages = newestquery(
                                 Packages.Summary.\
-                                    like("%" + search + "%"))
+                                    like("%" + search + "%"),
+                                order="n")
         elif searchby == 'obsoletes':
             packages = newestquery(
                                 Obsoletes.Resource.\
                                     like("%" + search + "%"),
+                                order="n",
                                 join=Obsoletes)
         elif searchby == 'conflicts':
             packages = newestquery(
                                 Conflicts.Resource.\
                                     like("%" + search + "%"),
+                                order="n",
                                 join=Conflicts)
         else:
             abort(404)
 
         breadcrumbscontent = ['Search']
 
-    packnames = buildpacknames(packages, ordering)
+    packnames = buildpacknames(packages)
         
     return render_template('index.html',
         packnames = packnames,

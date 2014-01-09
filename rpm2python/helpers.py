@@ -1,7 +1,7 @@
 from rpm2python import db, app
 
 from models import Packages, Distribution
-from sqlalchemy import func, not_, and_
+from sqlalchemy import func, not_, and_, desc
 from sqlalchemy.orm import aliased
 import datetime
 import os
@@ -42,15 +42,7 @@ class PackageName():
             self.newest[package[1]] = package[0]
 
 
-def alpha_ordering(package1, package2):
-    return True if package1.Name < package2.Name else False
-
-
-def date_ordering(package1, package2):
-    return False if package1.Date < package2.Date else True
-
-
-def buildpacknames(packages, ordering):
+def buildpacknames(packages):
     """Puts the given list of packages into a
     container object called PackageName this stores all packages
     of the same name together. The list should be sorted.
@@ -135,10 +127,15 @@ def newestquery(queryfilter, order=None, join=None):
     packages of a certain name. Check views.py/index to get an idea
     of how it's used.
     """
-    if order is None:
-        order = Packages.Name
     p1 = aliased(Packages)
     d1 = aliased(Distribution)
+    if order is None:
+        order = p1.nvr
+    elif order == "n":
+        order = p1.nvr
+    elif order == "d":
+        order = p1.Date
+
     if join is None:
         sq = db.session.\
                     query(
@@ -194,4 +191,4 @@ def newestquery(queryfilter, order=None, join=None):
                         sq.c.Arch==p1.Arch,
                         sq.c.repo==d1.repo,
                         sq.c.Date==p1.Date)).\
-                    order_by(p1.nvr, p1.Arch).all()
+                    order_by(desc(order), p1.Arch).all()
