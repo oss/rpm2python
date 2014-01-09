@@ -298,7 +298,9 @@ select{
 .resultsLine{
 	width: 100%;
 	border-collapse: collapse;
-    font-size: 13px;
+  font-size: 13px;
+  max-height: 200px;
+  overflow: scroll;
 }
 .resultsLine tbody tr:hover td{
 	background: #f0f0f0;
