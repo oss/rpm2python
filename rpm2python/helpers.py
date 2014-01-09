@@ -134,7 +134,7 @@ def newestquery(queryfilter, order=None, join=None):
     elif order == "n":
         order = p1.nvr
     elif order == "d":
-        order = p1.Date
+        order = desc(p1.Date)
 
     sq = db.session.\
                 query(
@@ -170,4 +170,4 @@ def newestquery(queryfilter, order=None, join=None):
                         sq.c.Arch==p1.Arch,
                         sq.c.repo==d1.repo,
                         sq.c.Date==p1.Date)).\
-                    order_by(desc(order), p1.Arch).all()
+                    order_by(order, p1.Arch).all()
