@@ -78,47 +78,39 @@ def index(letter=None, search=None, searchby=None):
         if searchby == 'name':
             packages = newestquery(
                                 Packages.Name.\
-                                    like("%" + search + "%"),
-                                order="n")
+                                    like("%" + search + "%"))
         elif searchby == 'file':
             packages = newestquery(
                                 Files.Path.\
                                     like("%" + search + "%"),
-                                order="n",
                                 join=Files)
         elif searchby == 'provides':
             packages = newestquery(
                                 Provides.Resource.\
                                     like("%" + search + "%"),
-                                order="n",
                                 join=Provides)
         elif searchby == 'requires':
             packages = newestquery(
                                 Requires.Resource.\
                                     like("%" + search + "%"),
-                                order="n",
                                 join=Requires)
         elif searchby == 'description':
             packages = newestquery(
                                 Packages.Description.\
-                                    like("%" + search + "%"),
-                                order="n")
+                                    like("%" + search + "%"))
         elif searchby == 'summary':
             packages = newestquery(
                                 Packages.Summary.\
-                                    like("%" + search + "%"),
-                                order="n")
+                                    like("%" + search + "%"))
         elif searchby == 'obsoletes':
             packages = newestquery(
                                 Obsoletes.Resource.\
                                     like("%" + search + "%"),
-                                order="n",
                                 join=Obsoletes)
         elif searchby == 'conflicts':
             packages = newestquery(
                                 Conflicts.Resource.\
                                     like("%" + search + "%"),
-                                order="n",
                                 join=Conflicts)
         else:
             abort(404)
