@@ -136,50 +136,29 @@ def newestquery(queryfilter, order=None, join=None):
     elif order == "d":
         order = p1.Date
 
-    if join is None:
-        sq = db.session.\
-                    query(
-                        Packages.Name,
-                        Packages.Arch,
-                        Distribution.repo,
-                        func.max(Packages.Date).\
-                                            label('Date')).\
-                    select_from(
-                        Packages).\
-                    join(
-                        Distribution).\
-                    filter(
-                        queryfilter).\
-                    filter(
-                        not_(Distribution.repo.\
-                                            like('%staging'))).\
-                    group_by(
-                        Packages.Name,
-                        Packages.Arch,
-                        Distribution.repo).subquery()
-    else:
-        sq = db.session.\
-                    query(
-                        Packages.Name,
-                        Packages.Arch,
-                        Distribution.repo,
-                        func.max(Packages.Date).\
-                                            label('Date')).\
-                    select_from(
-                        Packages).\
-                    join(
-                        Distribution).\
-                    join(
-                        join).\
-                    filter(
-                        queryfilter).\
-                    filter(
-                        not_(Distribution.repo.\
-                                            like('%staging'))).\
-                    group_by(
-                        Packages.Name,
-                        Packages.Arch,
-                        Distribution.repo).subquery()
+    sq = db.session.\
+                query(
+                    Packages.Name,
+                    Packages.Arch,
+                    Distribution.repo,
+                    func.max(Packages.Date).\
+                                        label('Date')).\
+                select_from(
+                    Packages).\
+                join(
+                    Distribution)
+    if join is not None:
+        sq = sq.join(join)
+    sq = sq.\
+            filter(
+                queryfilter).\
+            filter(
+                not_(Distribution.repo.\
+                                    like('%staging'))).\
+            group_by(
+                Packages.Name,
+                Packages.Arch,
+                Distribution.repo).subquery()
     return db.session.\
                     query(
                         p1, d1.repo).\
