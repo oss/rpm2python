@@ -46,6 +46,7 @@
 .ui-tabs .ui-tabs-nav li a,
 .ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-active a {
 	cursor: pointer;
+	outline: 0;
 }
 .ui-tabs .ui-tabs-panel {
 	display: block;
