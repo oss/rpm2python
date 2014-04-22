@@ -10,6 +10,13 @@
  */
 
 
+html, body {height: 100%;}
+#wrap {min-height: 100%;}
+#main {
+    overflow:auto;
+    padding-bottom: 15px;
+}
+
 body {
 	background: #eae7dd; 
 	font: 0.8em Verdana, sans-serif; 
@@ -598,13 +605,16 @@ select{
 	background-repeat: repeat;
 	padding-top: 2px;
 	padding-bottom: 1px;
+    margin-top: -15px;
 	margin-left: auto;
 	margin-right: auto;
     color: #fff;
 	text-align: center; 
     clear: both;
     bottom: 0%;
+    height: 15px;
 	min-width: 800px;
+    clear:both;
 }
 
 #footer a:visited{
