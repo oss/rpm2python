@@ -157,8 +157,9 @@ def package(rpm_id, dist, f=None):
         if repo in dist:
             distro = [repo + '-' + x for x in reponames]
             break
-    if distro == []:
+    if distro == [] or dist not in distro:
         abort(404)
+    repo = dist
 
     package = Packages.query.\
                         filter_by(rpm_id=rpm_id).\
