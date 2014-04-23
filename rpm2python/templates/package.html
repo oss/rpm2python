@@ -103,7 +103,7 @@
                                 </td>
                                 <td>
                                     <table id='resultsTable' style='margin-bottom: 0px;'>
-                                        {% for distro in package.distributions %}
+                                        {% for distro in package.distributions if "staging" not in distro.repo%}
                                         <tr>
                                             <td class='{{distro.repo}}' style='border: 0px; padding: 3px 0px; text-align: left;'>
                                                 {{distro.repo}}
