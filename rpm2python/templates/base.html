@@ -62,6 +62,10 @@
                             matchContains: true,
                             minLength: 2,
                             selectFirst: false,
+                            select: function( event, ui ) {
+                                $('#function_name').val(ui.item.value);
+                                $('#search_button').click();
+                            } 
                         });
                     }
                 });
