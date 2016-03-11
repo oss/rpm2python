@@ -7,7 +7,7 @@ import datetime
 import os
 import subprocess
 
-repos = ['centos5', 'centos6']
+repos = ['centos5', 'centos6', 'centos7']
 reponames = [
         'rutgers', 'rutgers-testing',
         'rutgers-unstable', 'rutgers-staging']

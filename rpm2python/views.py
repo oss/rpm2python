@@ -125,9 +125,9 @@ def index(letter=None, search=None, searchby=None):
         form = form)
 
 @app.route(
-    '/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[56]-rutgers[-\w]*"):dist>',
+    '/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[567]-rutgers[-\w]*"):dist>',
     methods = ['GET', 'POST'])
-@app.route('/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[56]-rutgers[-\w]*"):dist>/getfile/<regex(r"([-\w\.]+/?(?!\.))*"):f>')
+@app.route('/<regex(r"[\d]{4,5}"):rpm_id>/<regex(r"centos[567]-rutgers[-\w]*"):dist>/getfile/<regex(r"([-\w\.]+/?(?!\.))*"):f>')
 def package(rpm_id, dist, f=None):
     """Returns lots of information about a particular package.
     Given an rpm_id, it returns information from the database including
