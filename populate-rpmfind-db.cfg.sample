@@ -1,0 +1,61 @@
+[koji]
+# These need to point to a directory containing Koji certs
+clientca            = /etc/pki/koji/koji_ca_cert.crt
+clientcert          = /etc/pki/koji/roji.pem
+serverca            = /etc/pki/koji/koji_ca_cert.crt
+hub                 = http://localhost/kojihub
+web_iface_private   = https://localhost/koji/
+web_iface_public    = http://localhost/koji/
+pkgdir              = /usr/koji/packages
+pkgdir_web          = http://localhost/koji/packages/
+
+[locks]
+# Locations and names of lock files. May be freely modified.
+populate-rpmfind-db = /var/lock/rutgers-repotools/populate-rpmfind-db
+
+[logs]
+# Settings for log files, log locations, and the like.
+backupCount         = 8
+maxBytes            = 1000000
+plainlog            = /tmp/webpush
+populate-rpmfind-db = /var/log/rutgers-repotools/populate-rpmfind-db.log
+
+[repositories]
+# Distribution versions and releases. allreleases need to match alldistvers in order
+alldistvers         = 5 6
+allreleases         = ru ru6
+
+# All of the repositories being managed; must be in order (parent child ...)
+allrepos            = rutgers rutgers-testing rutgers-unstable rutgers-staging
+dontpublishrepos    = rutgers-staging
+debugrepo           = rutgers-debuginfo
+repostodebug        = rutgers rutgers-testing
+repodir_public      = /usr/koji/public
+repodir_private     = /usr/koji/private
+archs               = x86_64 i386
+distname            = centos
+distname_nice       = CentOS
+distver             = 5
+distroverpkg        = centos-release
+groupowner          = packagepushers
+depcheck_ignorefile = /etc/depcheck.ignore
+
+# The next three are used by rpm2php only
+# allrepos display names. same order please
+allrepos_display    = Stable Testing Unstable Staging
+# dontpublishrepos display names. same order please
+dontpublishrepos_display= Staging
+# arch to list in search results
+arch_display        = x86_64
+
+[rpmdb]
+host                = localhost
+name                = rpmdatabase
+user                = roji
+password            = password
+
+[report]
+user                = roji
+from_addr           = roji@koji.rutgers.edu
+to_addr             = youremail@example.com
+smtp_host           = localhost

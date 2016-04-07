@@ -4,5 +4,11 @@ shell.py
 virtualenv.py
 venv
 rpm2python/getfile/*
-*.swp
 test/node_modules
+
+# Ignore temporary files
+*.swp
+*.tmp
+
+# Ignore our configuration files, offering up samples instead
+populate-rpmfind-db.cfg

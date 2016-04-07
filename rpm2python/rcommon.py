@@ -33,7 +33,7 @@ import time
 
 class AppHandler:
     """ Repotool application handler class """
-    def __init__(self, verifyuser=True, config_file='/etc/rutgers-repotools.cfg'):
+    def __init__(self, verifyuser=True, config_file='../populate-rpmfind-db.cfg'):
         self.config = None
         self.load_config(config_file)
         self.username = getpass.getuser()
@@ -47,7 +47,7 @@ class AppHandler:
         self._callerfile = inspect.stack()[-1][1]
         self._callername = self._callerfile.split("/")[-1]
         try:
-            self._lockfilename = self.config.get("locks", self._callername)
+            self._lockfilename = self.config.get("locks", "populate-rpmfind-db")
         except ConfigParser.NoOptionError:
             self._lockfilename = None
 
