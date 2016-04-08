@@ -12,3 +12,4 @@ test/node_modules
 
 # Ignore our configuration files, offering up samples instead
 populate-rpmfind-db.cfg
+rpm2python.cfg

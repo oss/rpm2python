@@ -135,38 +135,3 @@ class AppHandler:
         except:
             lockfile.close()
             return False
-
-    def exit(self, status=0):
-        """ Exit from application gracefully """
-        if self.logger:
-            self.logger.debug("Beginning exit and cleanup.")
-        else:
-            print "Warning: Exiting, but logger has not been initialized."
-
-        if self._lockfilename:
-            AppHandler.remove_lock(self._lockfilename)
-
-        gid = grp.getgrnam(self.groupowner)[2]
-        private_dir = self.config.get('repositories', 'repodir_private')
-
-        # Check to make sure current process is in correct group
-        allgroups = os.getgroups()
-        if not gid in allgroups:
-            self.logger.warning("Current process is not in the proper group ({0}).".format(gid))
-
-        if os.stat(private_dir)[5] != gid:
-            self.logger.info("Chowning " + private_dir + " to group " + self.groupowner)
-            # Recursively chown private_dir
-            for root, dirs, files in os.walk(private_dir):
-                for path in dirs:
-                    os.chown(os.path.join(root, path), -1, gid, follow_symlinks=False)
-                for path in files:
-                    os.chown(os.path.join(root, path), -1, gid, follow_symlinks=False)
-        else:
-            self.logger.debug("Group ID is {0}: all systems go.".format(gid))
-
-        # Make sure the log file ends up with the right group owner:
-        if self._logfile:
-            if os.stat(self._logfile)[5] != gid:
-                os.chown(self._logfile, -1, gid)
-        sys.exit(status)
