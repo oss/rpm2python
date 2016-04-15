@@ -12,7 +12,7 @@ EXTRA_DIST = run.py \
 			 pip1.req \
 			 pip2.req \
 			 rpm2python.cfg.sample \
-			 populate-rpmfind-db.cfg.sample
+			 populate-rpmfind-db.cfg.sample \
 			 run.wsgi
 
 install-data-hook:
@@ -28,6 +28,8 @@ install-data-hook:
 	cp run.wsgi $(RPMDIR); \
 	virtualenv -p `which python2` $(RPMDIR)/venv; \
 	source $(RPMDIR)/venv/bin/activate; \
+	cp -r $(pythondir)/koji $(RPMDIR)/venv/lib/python2.6/site-packages; \
+	cp -r $(pythondir)/rpm $(RPMDIR)/venv/lib/python2.6/site-packages; \
 	pip install -r pip1.req; \
 	pip install -r pip2.req;
 
