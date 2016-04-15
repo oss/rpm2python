@@ -31,7 +31,7 @@ import logging
 import string
 import time
 
-my_config_file='./populate-rpmfind-db.cfg'
+my_config_file='/etc/populate-rpmfind-db.cfg'
 """ Utility to update rpmfind database """
 os.umask(002)
 myapp = rcommon.AppHandler(verifyuser=True,config_file=my_config_file)

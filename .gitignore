@@ -13,3 +13,18 @@ test/node_modules
 # Ignore our configuration files, offering up samples instead
 populate-rpmfind-db.cfg
 rpm2python.cfg
+
+# Ignore automake cruft
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+depcomp
+install-sh
+Makefile
+Makefile.in
+missing
+py-compile
+*.tar.gz
+venv
