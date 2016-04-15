@@ -7,6 +7,7 @@ EXTRA_DIST = run.py \
 			 populate-rpmfind-db \
 			 rpm2python \
 			 test \
+			 httpd \
 			 run.py \
 			 pip1.req \
 			 pip2.req \
@@ -22,6 +23,7 @@ install-data-hook:
 	cp pip2.req $(RPMDIR); \
 	cp rpm2python.cfg.sample /etc/rpm2python.cfg; \
 	cp populate-rpmfind-db.cfg.sample /etc/populate-rpmfind-db.cfg;
+	cp httpd/rpm2python.conf /etc/httpd/conf.d
 	virtualenv -p `which python2` $(RPMDIR)/venv; \
 	source $(RPMDIR)/venv/bin/activate; \
 	pip install -r pip1.req; \
