@@ -135,3 +135,26 @@ class AppHandler:
         except:
             lockfile.close()
             return False
+
+    def exit(self, status=0):
+        """ Exit from application gracefully """
+        if self.logger:
+            self.logger.debug("Beginning exit and cleanup.")
+        else:
+            print "Warning: Exiting, but logger has not been initialized."
+
+        if self._lockfilename:
+            AppHandler.remove_lock(self._lockfilename)
+
+        gid = grp.getgrnam(self.groupowner)[2]
+
+        # Check to make sure current process is in correct group
+        allgroups = os.getgroups()
+        if not gid in allgroups:
+            self.logger.warning("Current process is not in the proper group ({0}).".format(gid))
+
+        # Make sure the log file ends up with the right group owner:
+        if self._logfile:
+            if os.stat(self._logfile)[5] != gid:
+                os.chown(self._logfile, -1, gid)
+        sys.exit(status)

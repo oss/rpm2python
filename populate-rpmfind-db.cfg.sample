@@ -8,14 +8,14 @@ pkgdir              = /usr/koji/packages
 
 [locks]
 # Locations and names of lock files. May be freely modified.
-populate-rpmfind-db = /var/lock/rutgers-repotools/populate-rpmfind-db
+populate-rpmfind-db = /var/lock/rpm2python/populate-rpmfind-db
 
 [logs]
 # Settings for log files, log locations, and the like.
 backupCount         = 8
 maxBytes            = 1000000
 plainlog            = /tmp/webpush
-populate-rpmfind-db = /var/log/rutgers-repotools/populate-rpmfind-db.log
+populate-rpmfind-db = /var/log/rpm2python/populate-rpmfind-db.log
 
 [repositories]
 # Distribution versions and releases. allreleases need to match alldistvers in order
@@ -26,13 +26,13 @@ allreleases         = ru ru6 ru7
 allrepos            = rutgers rutgers-testing rutgers-unstable rutgers-staging
 distname            = centos
 distname_nice       = CentOS
-groupowner          = packagepushers
+groupowner          = rpm2python
 
 [rpmdb]
 host                = localhost
-name                = rpmdatabase
+name                = rpmfind
 user                = roji
-password            = password
+password            = PASSWORD
 
 [report]
 user                = roji

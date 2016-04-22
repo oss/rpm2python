@@ -7,7 +7,7 @@ CSRF_ENABLED = True
 SECRET_KEY = 'default'
 
 #database location
-SQLALCHEMY_DATABASE_URI = 'mysql://username:password@server/db'
+SQLALCHEMY_DATABASE_URI = 'mysql://roji:PASSWORD@localhost/rpmfind'
 
 DATABASE_CONNECT_OPTIONS = {}
 

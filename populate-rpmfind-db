@@ -1,4 +1,4 @@
-#!venv/bin/python
+#!/var/www/rpm2python/venv/bin/python
 """ Utility to update rpmfind database """
 ###############################################################################
 #Programmer: Orcan Ogetbil    orcan@nbcs.rutgers.edu                          #
@@ -20,12 +20,13 @@
 #                                                                             #
 ###############################################################################
 import sys
+sys.path.append('/var/www/rpm2python/rpm2python')
 import _mysql
 import _mysql_exceptions
 from MySQLdb.constants import FIELD_TYPE
 import os
-from rpm2python import rcommon
-from rpm2python import populatedb
+import rcommon
+import populatedb
 from optparse import OptionParser
 import logging
 import string
@@ -64,10 +65,10 @@ if options.rebuild:
 
     dbase = _mysql.connect(db_host, db_user, db_pw, db_name, conv=my_conv)
     
-populatedb.clean_database(myapp, dbase)
-populatedb.create_tables(myapp, dbase)
+    populatedb.clean_database(myapp, dbase)
+    populatedb.create_tables(myapp, dbase)
 
-dbase.close()
+    dbase.close()
 
 distname = myapp.config.get("repositories", "distname_nice")
 alldistvers = myapp.config.get("repositories", "alldistvers").split()
