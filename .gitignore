@@ -1,8 +1,4 @@
 *.pyc
-installflask.sh
-shell.py
-virtualenv.py
-venv
 rpm2python/getfile/*
 test/node_modules
 
