@@ -2,7 +2,7 @@ AUTOMAKE_OPTIONS = foreign
 bindir=/usr/bin
 bin_SCRIPTS = populate-rpmfind-db
 
-RPMDIR = /var/www/rpm2python
+INST_DIR = /var/www/rpm2python
 
 EXTRA_DIST = run.py \
 			 populate-rpmfind-db \
@@ -14,40 +14,31 @@ EXTRA_DIST = run.py \
 			 pip2.req \
 			 rpm2python.cfg.sample \
 			 populate-rpmfind-db.cfg.sample \
-			 run.wsgi
+			 run.wsgi \
+			 venv.tar.gz
 
 install-data-hook:
-	mkdir $(RPMDIR); \
-	groupadd rpm2python; \
-	cp -r rpm2python $(RPMDIR); \
-	cp -r test $(RPMDIR); \
-	cp run.py $(RPMDIR); \
-	cp pip1.req $(RPMDIR); \
-	cp pip2.req $(RPMDIR); \
-	cp rpm2python.cfg.sample /etc/rpm2python.cfg; \
-	cp populate-rpmfind-db.cfg.sample /etc/populate-rpmfind-db.cfg;
-	cp httpd/rpm2python.conf /etc/httpd/conf.d
-	cp run.wsgi $(RPMDIR); \
-	virtualenv -p `which python2` $(RPMDIR)/venv; \
-	source $(RPMDIR)/venv/bin/activate; \
-	pip install -r pip1.req; \
-	pip install -r pip2.req; \
-	cp -r /usr/lib/python2.6/site-packages/koji $(RPMDIR)/venv/lib/python2.6/site-packages; \
-	cp -r /usr/lib64/python2.6/site-packages/rpm $(RPMDIR)/venv/lib/python2.6/site-packages; \
-	mkdir -p /var/log/rpm2python; \
-	chgrp rpm2python /var/log/rpm2python; \
-	chmod 771 -R /var/log/rpm2python; \
-	mkdir -p /var/lock/rpm2python; \
-	chgrp rpm2python /var/lock/rpm2python; \
-	chmod 771 -R /var/lock/rpm2python; \
-	service httpd restart
+	mkdir -p $(DESTDIR)$(INST_DIR); \
+	cp -r rpm2python $(DESTDIR)$(INST_DIR); \
+	tar xvf venv.tar.gz -C $(DESTDIR)$(INST_DIR); \
+	cp -r test $(DESTDIR)$(INST_DIR); \
+	cp run.py $(DESTDIR)$(INST_DIR); \
+	cp pip1.req $(DESTDIR)$(INST_DIR); \
+	cp pip2.req $(DESTDIR)$(INST_DIR); \
+	mkdir -p $(DESTDIR)/etc; \
+	cp rpm2python.cfg.sample $(DESTDIR)/etc/rpm2python.cfg.sample; \
+	cp populate-rpmfind-db.cfg.sample $(DESTDIR)/etc/populate-rpmfind-db.cfg.sample; \
+	mkdir -p $(DESTDIR)/etc/httpd/conf.d; \
+	cp httpd/rpm2python.conf $(DESTDIR)/etc/httpd/conf.d/rpm2python.conf; \
+	cp run.wsgi $(DESTDIR)$(INST_DIR); \
+	mkdir -p $(DESTDIR)/var/log/rpm2python; \
+	mkdir -p $(DESTDIR)/var/lock/rpm2python; 
 
 uninstall-hook:
-	rm -r $(RPMDIR); \
-	rm -r /var/lock/rpm2python; \
-	rm -r /var/log/rpm2python; \
-	rm /etc/httpd/conf.d/rpm2python.conf; \
-	service httpd restart
+	rm -r $(DESTDIR)/$(INST_DIR); \
+	rm -r $(DESTDIR)/var/lock/rpm2python; \
+	rm -r $(DESTDIR)/var/log/rpm2python; \
+	rm $(DESTDIR)/etc/httpd/conf.d/rpm2python.conf;
 
 populate-rpmfind-db:
 	chmod +x populate-rpmfind-db
