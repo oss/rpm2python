@@ -102,13 +102,13 @@ def populate_database(dbase, content):
         dbase.query(distquery)
 
     for entry in content['specchangelog']:
-        entry['author'] = entry['author'].encode('utf-8')
-        entry['text'] = entry['text'].encode('utf-8')
-        dbase.execute(""" INSERT INTO SpecChangeLogs
-                (build_id, Date, Author, Text, rpm_id)
-                VALUES (%s      , %s  , "%s"  , "%s", %s)""", 
-            (content['build_id'], entry['date_ts'], entry['author'],
-               entry['text'], content['rpm_id']) )
+        entry['author'] = dbase.escape_string(entry['author'].encode('utf-8'))
+        entry['text'] = dbase.escape_string(entry['text'].encode('utf-8'))
+        dbase.query(""" INSERT INTO SpecChangeLogs
+            (build_id, Date, Author, Text, rpm_id) VALUES 
+            (%s      , %s  , "%s"  , "%s", %s)
+            """ % (content['build_id'], entry['date_ts'], entry['author'],
+                entry['text'], content['rpm_id']) )
 
     # Sanitization
     if content['softwarechangelog']:
