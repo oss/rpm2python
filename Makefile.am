@@ -20,7 +20,7 @@ EXTRA_DIST = run.py \
 install-data-hook:
 	mkdir -p $(DESTDIR)$(INST_DIR); \
 	cp -r rpm2python $(DESTDIR)$(INST_DIR); \
-	tar xvf venv.tar.gz -C $(DESTDIR)$(INST_DIR); \
+	cp -r venv $(DESTDIR)$(INST_DIR); \
 	cp -r test $(DESTDIR)$(INST_DIR); \
 	cp run.py $(DESTDIR)$(INST_DIR); \
 	cp pip1.req $(DESTDIR)$(INST_DIR); \
