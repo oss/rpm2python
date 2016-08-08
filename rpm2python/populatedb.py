@@ -24,6 +24,7 @@ import os
 import string
 import _mysql
 import _mysql_exceptions
+import MySQLdb
 from MySQLdb.constants import FIELD_TYPE
 
 def populate_database(dbase, content):
@@ -445,13 +446,16 @@ def create_tables(app, dbase):
 
 def update_db(app, clean=False, create=False, removeoldpkg=False):
     """ Wrapper function that governs everything """
-    my_conv = { FIELD_TYPE.LONG: int }
+    #my_conv = { FIELD_TYPE.LONG: int }
     db_host = app.config.get("rpmdb", "host")
     db_user = app.config.get("rpmdb", "user")
     db_pw   = app.config.get("rpmdb", "password")
     db_name = app.config.get("rpmdb", "name")
 
-    dbase = _mysql.connect(db_host, db_user, db_pw, db_name, conv=my_conv)
+    # Custom conv databases break unicode stuff...
+    #dbase = MySQLdb.connect(db_host, db_user, db_pw, db_name, conv=my_conv, charset="utf8")
+
+    dbase = MySQLdb.connect(db_host, db_user, db_pw, db_name, charset="utf8")
 
     kojisession = app.get_koji_session(ssl = False)
 
