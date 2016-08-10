@@ -46,6 +46,9 @@ parser.add_option("-v",
                   default=False,
                   action="store_true",
                   help="Verbose output")
+parser.add_option("-d", "--distver",
+                  action="store", type="string", dest="distver", default="",
+                  help="Populate only specific distver (give option as number)")
 
 (options, args) = parser.parse_args(sys.argv[1:])
 myapp.create_lock()
@@ -72,12 +75,18 @@ if options.rebuild:
 
 distname = myapp.config.get("repositories", "distname_nice")
 alldistvers = myapp.config.get("repositories", "alldistvers").split()
-for distver in alldistvers:
-    myapp.distver = distver
-    myapp.logger.info("Populating rpmfind database for {0} {1}...".format(
-        distname, distver))
-    populatedb.update_db(myapp)
-
+if options.distver == "":
+  for distver in alldistvers:
+      myapp.distver = distver
+      myapp.logger.info("Populating rpmfind database for {0} {1}...".format(
+          distname, distver))
+      populatedb.update_db(myapp)
+else:
+  myapp.distver = options.distver
+  myapp.logger.info("Populating rpmfind database for {0} {1}...".format(
+      distname, options.distver))
+  populatedb.update_db(myapp)
+  
 timerun = myapp.time_run()
 myapp.logger.info("\nSuccess! Time run: " + str(timerun) + " s")
 
