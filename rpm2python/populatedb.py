@@ -444,7 +444,7 @@ def create_tables(app, dbase):
     app.logger.info("Tables Created (if they didn't exist)")
 
 
-def update_db(app, clean=False, create=False, removeoldpkg=True):
+def update_db(app, clean=False, create=False, removeoldpkg=False):
     """ Wrapper function that governs everything """
     #my_conv = { FIELD_TYPE.LONG: int }
     db_host = app.config.get("rpmdb", "host")
