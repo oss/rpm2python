@@ -1,4 +1,4 @@
-#!/var/www/rpm2python/venv/bin/python
+#!/heroes/u1/anp120/git/rpm2python/venv/bin/python
 
 import sys
 import getopt
