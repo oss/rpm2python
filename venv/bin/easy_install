@@ -1,4 +1,4 @@
-#!/heroes/u1/anp120/git/rpm2python/venv/bin/python2
+#!/var/www/rpm2python/venv/bin/python2
 
 # -*- coding: utf-8 -*-
 import re
